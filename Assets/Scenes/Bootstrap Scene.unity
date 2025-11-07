@@ -168,7 +168,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameManager: {fileID: 503552888803306912, guid: ecb740c824c4dff4f95e0e256b7c776d,
     type: 3}
-  mainMenu: {fileID: 0}
+  mainMenu: {fileID: 7870019423663266441, guid: 779af6aa6bb717d48a3659fe0b3bbab5,
+    type: 3}
   updateManager: {fileID: 1341813522856259509, guid: 38c1ce4f19525594dadda7cf156f8334,
     type: 3}
 --- !u!1660057539 &9223372036854775807
