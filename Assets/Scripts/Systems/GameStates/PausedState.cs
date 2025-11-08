@@ -14,13 +14,13 @@ public class PausedState : IState
     public void Enter()
     {
         Time.timeScale = 0f;
-        //UIManager.Instance.pauseScreen.SetActive(true);
+        UIManager.Instance.pauseScreen.SetActive(true);
     }
 
     public void Exit()
     {
         Time.timeScale = 1f;
-        //UIManager.Instance.pauseScreen.SetActive(false);
+        UIManager.Instance.pauseScreen.SetActive(false);
     }
 
     public void Update()
