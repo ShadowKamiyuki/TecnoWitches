@@ -2597,6 +2597,7 @@ GameObject:
   - component: {fileID: 1361319809}
   - component: {fileID: 1361319808}
   - component: {fileID: 1361319807}
+  - component: {fileID: 1361319810}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -2690,6 +2691,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1361319805}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1361319810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1361319805}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c15533c27e68398449751280245b11d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1507567552
 GameObject:
   m_ObjectHideFlags: 0
@@ -2984,7 +2997,7 @@ GameObject:
   - component: {fileID: 1865365967}
   - component: {fileID: 1865365966}
   m_Layer: 5
-  m_Name: HealthText
+  m_Name: EnergyText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3733,6 +3746,7 @@ MonoBehaviour:
   resultScreen: {fileID: 0}
   switchCooldown: {fileID: 246681083}
   healthBar: {fileID: 2051663087}
+  healthText: {fileID: 266742640}
   asyncLoader: {fileID: 1706732489}
 --- !u!1 &2096715992
 GameObject:

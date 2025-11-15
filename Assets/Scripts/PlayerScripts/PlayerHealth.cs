@@ -26,10 +26,7 @@ public class PlayerHealth : MonoBehaviour, IUpdatable
     {
         playerStats = GetComponent<PlayerStats>();
 
-        if (uiManager.healthText)
-        {
-            uiManager.healthText.text = $"{playerStats.CurrentHealth} / {playerStats.CharacterData.stats.maxHealth}";
-        }
+        uiManager.healthText.text = $"{playerStats.CurrentHealth} / {playerStats.CharacterData.stats.maxHealth}";
     }
 
     private void OnDestroy()
