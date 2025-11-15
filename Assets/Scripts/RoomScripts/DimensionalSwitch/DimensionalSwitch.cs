@@ -1,7 +1,10 @@
+using System;
 using UnityEngine;
 
 public class DimensionalSwitch : MonoBehaviour
 {
+    public static Action<bool> OnDimensionChanged;
+
     [Header("Room Settings")]
     [SerializeField] private GameObject physicRoom;
     [SerializeField] private GameObject digitalRoom;
@@ -44,6 +47,8 @@ public class DimensionalSwitch : MonoBehaviour
 
             inDigitalWorld = false;
         }
+
+        OnDimensionChanged?.Invoke(inDigitalWorld);
     }
 
     private void OnTriggerEnter(Collider other)
