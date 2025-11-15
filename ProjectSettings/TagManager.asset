@@ -8,11 +8,11 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - IsometricCursor
   - Water
   - UI
-  - 
-  - 
+  - PhysicalWorld
+  - DigitalWorld
   - 
   - 
   - 
