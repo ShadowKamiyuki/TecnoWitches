@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +12,8 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
     [Header("HUD elements")]
     [SerializeField] private Image switchCooldown;
     private Coroutine cooldownRoutine;
+    public Image healthBar;
+    public TextMeshProUGUI healthText;
 
     [Header("ASync Loader")]
     [SerializeField] private ASyncLoader asyncLoader;
