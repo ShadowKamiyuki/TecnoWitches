@@ -4,7 +4,6 @@ using UnityEngine.InputSystem;
 public class InputHandler : MonoBehaviour, IUpdatable
 {
     private PlayerControls controls;
-    public PlayerControls Controls => controls;
 
     private ICommand moveCommand;
     private ICommand dodgeCommand;
@@ -43,9 +42,6 @@ public class InputHandler : MonoBehaviour, IUpdatable
         specialAttackCommand = new ShootSpecialCommand(playerActions);
         switchDimensionCommand = new SwitchCommand(playerActions, switchCooldown);
         interactCommand = new InteractCommand(playerActions);
-
-        IsometricCrosshair crosshair = FindAnyObjectByType<IsometricCrosshair>();
-        crosshair.Init(controls);
     }
 
     private void OnEnable()

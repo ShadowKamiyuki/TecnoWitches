@@ -1,57 +1,45 @@
 using UnityEngine;
 
-public class IsometricCrosshair : MonoBehaviour, IUpdatable
+public class IsoCursor : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField] private Camera cam;
-    [SerializeField] private Transform crosshair;
-    [SerializeField] private LayerMask groundMask;
+    [Header("Cursor Settings")]
+    [SerializeField] private Camera mainCamera;
+    [SerializeField] private LayerMask floorMask;   // FloorLow, FloorHigh
+    [SerializeField] private float cursorHeightOffset = 0.05f;
 
     private PlayerControls controls;
 
-    public void Init(PlayerControls controlsRef)
+    private void Awake()
     {
-        controls = controlsRef;
+        controls = new PlayerControls();
     }
 
-    private void Start()
+    private void OnEnable()
     {
-        ServiceLocator.Get<CustomUpdateManager>().Register(this);
+        controls.Player.Enable();
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
-        ServiceLocator.Get<CustomUpdateManager>()?.Unregister(this);
+        controls.Player.Disable();
     }
 
-    public void Tick(float deltaTime)
+    private void Update()
     {
-        MoveCrosshair();
-        ShowCrosshair();
+        UpdateCursorPosition();
     }
 
-    private void ShowCrosshair()
-    {
-        if (ServiceLocator.Get<GameManager>().currentState.gameState != GameManager.GameState.Gameplay)
-        {
-            crosshair.gameObject.SetActive(false);
-        }
-        else
-        {
-            crosshair.gameObject.SetActive(true);
-        }
-    }
-
-    private void MoveCrosshair()
+    private void UpdateCursorPosition()
     {
         Vector2 mousePos = controls.Player.Point.ReadValue<Vector2>();
-        Ray ray = cam.ScreenPointToRay(mousePos);
+        Ray ray = mainCamera.ScreenPointToRay(mousePos);
 
-        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundMask))
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f, floorMask))
         {
-            Vector3 pos = hit.point;
-            pos.y += 0.01f;
-            crosshair.position = pos;
+            Vector3 cursorPos = hit.point;
+            cursorPos.y += cursorHeightOffset;
+
+            transform.position = cursorPos;
         }
     }
 }

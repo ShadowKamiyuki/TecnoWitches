@@ -7,9 +7,10 @@ public class PlayerActions : MonoBehaviour
     private PlayerStats player;
     private Vector3 move3D;
     private DimensionalSwitch currentRoom;
-    [HideInInspector] public DimensionalSwitch CurrentRoom => currentRoom;
     private GameManager gm;
 
+    [HideInInspector] public DimensionalSwitch CurrentRoom => currentRoom;
+    
     private void Start()
     {
         player = GetComponent<PlayerStats>();
