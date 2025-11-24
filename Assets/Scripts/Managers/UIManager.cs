@@ -12,8 +12,11 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
     [Header("HUD elements")]
     [SerializeField] private Image switchCooldown;
     private Coroutine cooldownRoutine;
+
     public Image healthBar;
     public TextMeshProUGUI healthText;
+    public Image energyBar;
+    public TextMeshProUGUI energyText;
 
     [Header("ASync Loader")]
     [SerializeField] private ASyncLoader asyncLoader;
