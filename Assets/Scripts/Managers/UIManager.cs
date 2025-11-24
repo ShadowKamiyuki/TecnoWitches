@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class UIManager : MonoBehaviourSingleton<UIManager>
 {
@@ -11,13 +12,18 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
     [Header("HUD elements")]
     [SerializeField] private Image switchCooldown;
     private Coroutine cooldownRoutine;
+    public Image healthBar;
+    public TextMeshProUGUI healthText;
 
     [Header("ASync Loader")]
     [SerializeField] private ASyncLoader asyncLoader;
 
+    private GameManager gameManager;
+
     protected override void OnAwaken()
     {
         ServiceLocator.Register<UIManager>(this);
+        gameManager = ServiceLocator.Get<GameManager>();
         DisableScreens();
     }
 
@@ -65,21 +71,21 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
 
     public void OnResumeGameClicked()
     {
-        GameManager.Instance.SetGameState(GameManager.GameState.Gameplay);
+        gameManager.SetGameState(GameManager.GameState.Gameplay);
     }
 
     public void OnMainMenuButtonClicked()
     {
-        DestroySingleton();
         asyncLoader.LoadLevelBtn("Bootstrap Scene");
-        GameManager.Instance.SetGameState(GameManager.GameState.MainMenu);
+        gameManager.SetGameState(GameManager.GameState.MainMenu);
+        DestroySingleton();
     }
 
     public void OnRestartButtonClicked()
     {
         DestroySingleton();
         asyncLoader.LoadLevelBtn("GameScene");
-        GameManager.Instance.SetGameState(GameManager.GameState.Gameplay);
+        gameManager.SetGameState(GameManager.GameState.Gameplay);
         resultScreen.SetActive(false);
     }
 

@@ -892,7 +892,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   loadingScreen: {fileID: 2165319500107395520}
-  menu: {fileID: 1449347071971129292}
+  menus:
+  - {fileID: 1449347071971129292}
   loadingSlider: {fileID: 4947420902164753716}
 --- !u!1 &3001936591857702875
 GameObject:

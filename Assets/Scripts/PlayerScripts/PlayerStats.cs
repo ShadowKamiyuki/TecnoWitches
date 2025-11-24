@@ -3,6 +3,8 @@ using UnityEngine;
 public class PlayerStats : MonoBehaviour
 {
     private CharacterData characterData;
+    public CharacterData CharacterData => characterData;
+
     public CharacterData.Stats baseStats;
     [SerializeField] private CharacterData.Stats actualStats;
 
