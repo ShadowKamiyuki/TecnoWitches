@@ -8,6 +8,7 @@ public class PlayerActions : MonoBehaviour
     private Vector3 move3D;
     private DimensionalSwitch currentRoom;
     private GameManager gm;
+    private PlayerEnergy playerEnergy;
 
     [HideInInspector] public DimensionalSwitch CurrentRoom => currentRoom;
     
@@ -15,6 +16,7 @@ public class PlayerActions : MonoBehaviour
     {
         player = GetComponent<PlayerStats>();
         rb = GetComponent<Rigidbody>();
+        playerEnergy = GetComponent<PlayerEnergy>();
         gm = ServiceLocator.Get<GameManager>();
     }
 
@@ -63,6 +65,7 @@ public class PlayerActions : MonoBehaviour
 
     public void SpecialAttack()
     {
+        playerEnergy.UseEnergy(100f);
         Debug.Log("Special attack!");
     }
 

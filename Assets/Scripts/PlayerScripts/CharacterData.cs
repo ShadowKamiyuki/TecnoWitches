@@ -12,13 +12,14 @@ public class CharacterData : ScriptableObject
     [System.Serializable]
     public struct Stats
     {
-        public float maxHealth, maxMagicPower, moveSpeed, critRate, critDamage;
+        public float maxHealth, maxEnergy, energyRecovery, moveSpeed, critRate, critDamage;
         public float might, projectileSpeed, magnet;
 
-        public Stats(float maxHealth = 1000, float maxMagicPower = 100, float moveSpeed = 1f, float critRate = 1f, float critDamage = 1f, float might = 1f, float projectileSpeed = 1f, float magnet = 30f)
+        public Stats(float maxHealth = 1000, float maxEnergy = 100, float energyRecovery = 10f, float moveSpeed = 1f, float critRate = 1f, float critDamage = 1f, float might = 1f, float projectileSpeed = 1f, float magnet = 30f)
         {
             this.maxHealth = maxHealth;
-            this.maxMagicPower = maxMagicPower;
+            this.maxEnergy = maxEnergy;
+            this.energyRecovery = energyRecovery;
             this.moveSpeed = moveSpeed;
             this.critRate = critRate;
             this.critDamage = critDamage;
@@ -31,7 +32,7 @@ public class CharacterData : ScriptableObject
         {
             s1.maxHealth += s2.maxHealth;
             s1.moveSpeed += s2.moveSpeed;
-            s1.maxMagicPower += s2.maxMagicPower;
+            s1.maxEnergy += s2.maxEnergy;
             s1.critRate += s2.critRate;
             s1.critDamage += s2.critDamage;
             s1.might += s2.might;

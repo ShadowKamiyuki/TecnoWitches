@@ -10,6 +10,8 @@ public class PlayerStats : MonoBehaviour
 
     // current stats
     private float currentHealth;
+    private float currentEnergy;
+    private float currentEnergyRecovery;
     private float currentMoveSpeed;
     private float currentMight;
     private float currentProjectileSpeed;
@@ -21,6 +23,18 @@ public class PlayerStats : MonoBehaviour
     {
         get { return currentHealth; }
         set { currentHealth = value; }
+    }
+
+    public float CurrentEnergy
+    {
+        get { return currentEnergy; }
+        set { currentEnergy = value; }
+    }
+
+    public float CurrentEnergyRecovery
+    {
+        get { return currentEnergyRecovery; }
+        set { currentEnergyRecovery = value; }
     }
 
     public float CurrentMoveSpeed
@@ -68,6 +82,8 @@ public class PlayerStats : MonoBehaviour
 
         // assign the variables
         CurrentHealth = characterData.stats.maxHealth;
+        CurrentEnergy = characterData.stats.maxEnergy;
+        CurrentEnergyRecovery = characterData.stats.energyRecovery;
         CurrentMoveSpeed = characterData.stats.moveSpeed;
         CurrentMight = characterData.stats.might;
         CurrentProjectileSpeed = characterData.stats.projectileSpeed;

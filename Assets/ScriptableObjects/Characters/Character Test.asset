@@ -16,7 +16,8 @@ MonoBehaviour:
   name: 
   stats:
     maxHealth: 1000
-    maxMagicPower: 100
+    maxEnergy: 100
+    energyRecovery: 1
     moveSpeed: 10
     critRate: 1
     critDamage: 1
