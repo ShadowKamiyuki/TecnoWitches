@@ -195,6 +195,7 @@ Transform:
   - {fileID: 703655559}
   - {fileID: 836588054}
   - {fileID: 1361319806}
+  - {fileID: 55560194}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &50749832
@@ -337,7 +338,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 16823514}
     m_Modifications:
     - target: {fileID: 3601302180190855739, guid: 62cf412da77bcf94dbf27b486c26956b,
         type: 3}
@@ -367,17 +368,17 @@ PrefabInstance:
     - target: {fileID: 4872967368559096163, guid: 62cf412da77bcf94dbf27b486c26956b,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4872967368559096163, guid: 62cf412da77bcf94dbf27b486c26956b,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4872967368559096163, guid: 62cf412da77bcf94dbf27b486c26956b,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4872967368559096163, guid: 62cf412da77bcf94dbf27b486c26956b,
         type: 3}
@@ -399,6 +400,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 62cf412da77bcf94dbf27b486c26956b, type: 3}
+--- !u!4 &55560194 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4872967368559096163, guid: 62cf412da77bcf94dbf27b486c26956b,
+    type: 3}
+  m_PrefabInstance: {fileID: 55560193}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &121071023
 GameObject:
   m_ObjectHideFlags: 0
@@ -2787,7 +2794,7 @@ GameObject:
   - component: {fileID: 1361319807}
   - component: {fileID: 1361319810}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: TestSpike
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4561,4 +4568,3 @@ SceneRoots:
   - {fileID: 1959594555}
   - {fileID: 220381182}
   - {fileID: 16823514}
-  - {fileID: 55560193}
