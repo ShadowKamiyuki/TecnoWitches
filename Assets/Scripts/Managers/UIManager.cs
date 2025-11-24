@@ -76,9 +76,9 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
 
     public void OnMainMenuButtonClicked()
     {
-        DestroySingleton();
         asyncLoader.LoadLevelBtn("Bootstrap Scene");
         gameManager.SetGameState(GameManager.GameState.MainMenu);
+        DestroySingleton();
     }
 
     public void OnRestartButtonClicked()

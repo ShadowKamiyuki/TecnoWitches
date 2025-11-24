@@ -7,14 +7,17 @@ public class ASyncLoader : MonoBehaviour
 {
     [Header("Menu Screen")]
     [SerializeField] private GameObject loadingScreen;
-    [SerializeField] private GameObject menu;
+    [SerializeField] private GameObject[] menus;
 
     [Header("Slider")]
     [SerializeField] private Slider loadingSlider;
 
     public void LoadLevelBtn(string levelToLoad)
     {
-        menu.SetActive(false);
+        foreach (GameObject menu in menus)
+        {
+            menu.SetActive(false);
+        }
 
         loadingScreen.SetActive(true);
 

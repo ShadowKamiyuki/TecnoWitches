@@ -534,10 +534,10 @@ RectTransform:
   - {fileID: 121071024}
   m_Father: {fileID: 1711123274}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 90}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 200, y: -280}
+  m_SizeDelta: {x: 400, y: 90}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &160937454
 MonoBehaviour:
@@ -1623,7 +1623,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &639984894
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1885,7 +1885,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 671038000}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: df64ce6c251a8b242b9daf0e5ce6ef49, type: 3}
   m_Name: 
@@ -1989,8 +1989,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 1886747150979790269}
-  floorHeightPhysical: 0.51
-  floorHeightDigital: 10.51
+  floorHeightPhysical: 0.515
+  floorHeightDigital: 10.515
 --- !u!1 &753677619
 GameObject:
   m_ObjectHideFlags: 0
@@ -2703,6 +2703,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c15533c27e68398449751280245b11d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1382515212
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1382515213}
+  m_Layer: 5
+  m_Name: ResultScreen
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &1382515213
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1382515212}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1959594555}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1507567552
 GameObject:
   m_ObjectHideFlags: 0
@@ -2737,10 +2772,10 @@ RectTransform:
   - {fileID: 50749833}
   m_Father: {fileID: 1711123274}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 90}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 200, y: -170}
+  m_SizeDelta: {x: 400, y: 90}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1507567554
 MonoBehaviour:
@@ -2903,9 +2938,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f355f7c1d9bf1a34482f1e2616d6041b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  loadingScreen: {fileID: 0}
-  menu: {fileID: 0}
-  loadingSlider: {fileID: 0}
+  loadingScreen: {fileID: 1658846293}
+  menus:
+  - {fileID: 639984893}
+  - {fileID: 1382515212}
+  loadingSlider: {fileID: 2096715994}
 --- !u!4 &1706732490
 Transform:
   m_ObjectHideFlags: 0
@@ -3463,6 +3500,7 @@ RectTransform:
   m_Children:
   - {fileID: 236433358}
   - {fileID: 639984894}
+  - {fileID: 1382515213}
   - {fileID: 1658846294}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3743,7 +3781,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pauseScreen: {fileID: 639984893}
-  resultScreen: {fileID: 0}
+  resultScreen: {fileID: 1382515212}
   switchCooldown: {fileID: 246681083}
   healthBar: {fileID: 2051663087}
   healthText: {fileID: 266742640}
