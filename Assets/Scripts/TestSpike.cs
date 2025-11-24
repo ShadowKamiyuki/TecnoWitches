@@ -6,8 +6,12 @@ public class TestSpike : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            PlayerHealth player = GetComponent<PlayerHealth>();
-            player.TakeDamage(10f);
+            PlayerHealth player = collision.gameObject.GetComponent<PlayerHealth>();
+
+            if (player != null )
+            {
+                player.TakeDamage(100f);
+            }
         }
     }
 }

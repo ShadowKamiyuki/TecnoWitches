@@ -7,7 +7,7 @@ public class PlayerHealth : MonoBehaviour, IUpdatable
     private UIManager uiManager;
 
     [Header("Damage particle effect")]
-    [SerializeField] private ParticleSystem damageEffect;
+    //[SerializeField] private ParticleSystem damageEffect;
 
     // I-Frames
     [Header("I-Frames")]
@@ -17,13 +17,14 @@ public class PlayerHealth : MonoBehaviour, IUpdatable
 
     private void Awake()
     {
-        gm = ServiceLocator.Get<GameManager>();
-        uiManager = ServiceLocator.Get<UIManager>();
         ServiceLocator.Get<CustomUpdateManager>().Register(this);
     }
 
     private void Start()
     {
+        gm = ServiceLocator.Get<GameManager>();
+        uiManager = ServiceLocator.Get<UIManager>();
+
         playerStats = GetComponent<PlayerStats>();
 
         uiManager.healthText.text = $"{playerStats.CurrentHealth} / {playerStats.CharacterData.stats.maxHealth}";
