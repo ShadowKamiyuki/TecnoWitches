@@ -100,31 +100,49 @@ public class InputHandler : MonoBehaviour, IUpdatable
 
     private void OnAttack(InputAction.CallbackContext context)
     {
+        if (ServiceLocator.Get<GameManager>().currentState.gameState != GameManager.GameState.Gameplay)
+            return;
+
         attackCommand.Execute();
     }
 
     private void OnDodge(InputAction.CallbackContext context)
     {
+        if (ServiceLocator.Get<GameManager>().currentState.gameState != GameManager.GameState.Gameplay)
+            return;
+
         dodgeCommand.Execute();
     }
 
     private void OnPause(InputAction.CallbackContext context)
     {
+        if (ServiceLocator.Get<GameManager>().currentState.gameState != GameManager.GameState.Gameplay)
+            return;
+
         pauseCommand.Execute();
     }
 
     private void OnSpecialAttack(InputAction.CallbackContext context)
     {
+        if (ServiceLocator.Get<GameManager>().currentState.gameState != GameManager.GameState.Gameplay)
+            return;
+
         specialAttackCommand.Execute();
     }
 
     private void OnDimensionSwitch(InputAction.CallbackContext context)
     {
+        if (ServiceLocator.Get<GameManager>().currentState.gameState != GameManager.GameState.Gameplay)
+            return;
+
         switchDimensionCommand.Execute();
     }
 
     private void OnInteraction(InputAction.CallbackContext context)
     {
+        if (ServiceLocator.Get<GameManager>().currentState.gameState != GameManager.GameState.Gameplay)
+            return;
+
         interactCommand.Execute();
     }
 }
