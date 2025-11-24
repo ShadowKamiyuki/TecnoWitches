@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class IsoCursor : MonoBehaviour
+public class IsoCursor : MonoBehaviour, IUpdatable
 {
     [Header("Cursor Settings")]
     [SerializeField] private Camera mainCamera;
@@ -9,6 +9,7 @@ public class IsoCursor : MonoBehaviour
 
     private bool isDigital;
     private PlayerControls controls;
+    private GameManager gm;
 
     private void Awake()
     {
@@ -18,18 +19,26 @@ public class IsoCursor : MonoBehaviour
     private void OnEnable()
     {
         controls.Player.Enable();
+        ServiceLocator.Get<CustomUpdateManager>().Register(this);
+        gm = ServiceLocator.Get<GameManager>();
         DimensionalSwitch.OnDimensionChanged += UpdateDimension;
     }
 
     private void OnDisable()
     {
         controls.Player.Disable();
+        CustomUpdateManager updateManager = ServiceLocator.Get<CustomUpdateManager>();
+
+        if (updateManager != null)
+            updateManager.Unregister(this);
+
         DimensionalSwitch.OnDimensionChanged -= UpdateDimension;
     }
 
-    private void Update()
+    public void Tick(float deltaTime)
     {
-        UpdateCursorPosition();
+        if (gm.currentState.gameState == GameManager.GameState.Gameplay)
+            UpdateCursorPosition();
     }
 
     private void UpdateCursorPosition()
