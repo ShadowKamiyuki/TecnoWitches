@@ -16,6 +16,7 @@ public class InputHandler : MonoBehaviour, IUpdatable
     [HideInInspector] public Vector2 moveDir;
 
     [SerializeField] private float switchCooldown;
+    [SerializeField] private float dodgeCooldown;
 
     private void Awake()
     {
@@ -36,7 +37,7 @@ public class InputHandler : MonoBehaviour, IUpdatable
         }
 
         moveCommand = new MoveCommand(playerActions, this);
-        dodgeCommand = new DodgeCommand(playerActions);
+        dodgeCommand = new DodgeCommand(playerActions, dodgeCooldown);
         attackCommand = new ShootCommand(playerActions);
         pauseCommand = new PauseCommand();
         specialAttackCommand = new ShootSpecialCommand(playerActions);
@@ -116,10 +117,12 @@ public class InputHandler : MonoBehaviour, IUpdatable
 
     private void OnPause(InputAction.CallbackContext context)
     {
-        if (ServiceLocator.Get<GameManager>().currentState.gameState != GameManager.GameState.Gameplay)
-            return;
+        GameManager.GameState gameState = ServiceLocator.Get<GameManager>().currentState.gameState;
 
-        pauseCommand.Execute();
+        if (gameState == GameManager.GameState.Gameplay || gameState == GameManager.GameState.Paused)
+        {
+            pauseCommand.Execute();
+        }
     }
 
     private void OnSpecialAttack(InputAction.CallbackContext context)

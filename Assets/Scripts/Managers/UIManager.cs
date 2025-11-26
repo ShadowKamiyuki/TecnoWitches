@@ -11,7 +11,9 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
 
     [Header("HUD elements")]
     [SerializeField] private Image switchCooldown;
-    private Coroutine cooldownRoutine;
+    private Coroutine SwitchCooldownRoutine;
+    [SerializeField] private Image dodgeCooldown;
+    private Coroutine dodgeCooldownRoutine;
 
     public Image healthBar;
     public TextMeshProUGUI healthText;
@@ -46,16 +48,16 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
         Destroy(UIManager.Instance.gameObject);
     }
 
-    public void DisplayCooldown(float cooldown)
+    public void DisplaySwitchCooldown(float cooldown)
     {
-        if (cooldownRoutine != null)
-            StopCoroutine(cooldownRoutine);
+        if (SwitchCooldownRoutine != null)
+            StopCoroutine(SwitchCooldownRoutine);
 
         switchCooldown.fillAmount = 1f;
-        cooldownRoutine = StartCoroutine(Cooldown(cooldown));
+        SwitchCooldownRoutine = StartCoroutine(SwitchCooldown(cooldown));
     }
 
-    private IEnumerator Cooldown(float cooldown)
+    private IEnumerator SwitchCooldown(float cooldown)
     {
         float timeElapsed = 0;
 
@@ -67,7 +69,31 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
         }
 
         switchCooldown.fillAmount = 0f;
-        cooldownRoutine = null;
+        SwitchCooldownRoutine = null;
+    }
+
+    public void DisplayDodgeCooldown(float cooldown)
+    {
+        if (dodgeCooldownRoutine != null)
+            StopCoroutine(dodgeCooldownRoutine);
+
+        dodgeCooldown.fillAmount = 1f;
+        dodgeCooldownRoutine = StartCoroutine(DodgeCooldown(cooldown));
+    }
+
+    private IEnumerator DodgeCooldown(float cooldown)
+    {
+        float timeElapsed = 0;
+
+        while (timeElapsed < cooldown)
+        {
+            timeElapsed += Time.deltaTime;
+            dodgeCooldown.fillAmount = Mathf.Clamp01(1f - (timeElapsed / cooldown));
+            yield return null;
+        }
+
+        dodgeCooldown.fillAmount = 0f;
+        dodgeCooldownRoutine = null;
     }
 
     #region OnActionButton

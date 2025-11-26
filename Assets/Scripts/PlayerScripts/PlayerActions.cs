@@ -15,7 +15,6 @@ public class PlayerActions : MonoBehaviour
     [Header("Dash Settings")]
     [SerializeField] private float dashForce = 20f; // force applied to player while dashing (multiplies movement direction)
     [SerializeField] private float dashDuration = 0.15f; // total dash duration time
-    [SerializeField] private float dashCooldown = 1f;
 
     // internal variables
     private bool isDashing = false;
@@ -83,7 +82,7 @@ public class PlayerActions : MonoBehaviour
             dashCooldownTimer -= Time.fixedDeltaTime;
     }
 
-    public void Dodge()
+    public void Dodge(float cooldown)
     {
         if (dashCooldownTimer > 0f)
             return;
@@ -93,7 +92,7 @@ public class PlayerActions : MonoBehaviour
 
         isDashing = true;
         dashTimer = dashDuration;
-        dashCooldownTimer = dashCooldown;
+        dashCooldownTimer = cooldown;
 
         GetComponent<PlayerHealth>()?.ActivateInvincibility(dashDuration);
 
