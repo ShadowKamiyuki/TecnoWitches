@@ -11,7 +11,17 @@ public class PlayerActions : MonoBehaviour
     private PlayerEnergy playerEnergy;
 
     [HideInInspector] public DimensionalSwitch CurrentRoom => currentRoom;
-    
+
+    [Header("Dash Settings")]
+    public float dashForce = 20f; // force applied to player while dashing (multiplies movement direction)
+    public float dashDuration = 0.15f; // total dash duration time
+    public float dashCooldown = 1f;
+
+    // internal variables
+    private bool isDashing = false;
+    private float dashTimer = 0f;
+    private float dashCooldownTimer = 0f;
+
     private void Start()
     {
         player = GetComponent<PlayerStats>();
@@ -22,6 +32,7 @@ public class PlayerActions : MonoBehaviour
 
     private void FixedUpdate()
     {
+        DodgeMovement();
         Move();
     }
 
@@ -53,9 +64,40 @@ public class PlayerActions : MonoBehaviour
         rb.velocity = Vector3.zero;
     }
 
+    private void DodgeMovement()
+    {
+        // Si estamos en dash, ignoramos el movimiento normal
+        if (isDashing)
+        {
+            rb.velocity = move3D * dashForce;
+
+            dashTimer -= Time.fixedDeltaTime;
+            if (dashTimer <= 0f)
+                isDashing = false;
+
+            return;
+        }
+
+        // Cooldown
+        if (dashCooldownTimer > 0f)
+            dashCooldownTimer -= Time.fixedDeltaTime;
+    }
+
     public void Dodge()
     {
-        Debug.Log("Player jumped!");
+        if (dashCooldownTimer > 0f)
+            return;
+
+        if (move3D == Vector3.zero)
+            return; // evitar dash parado
+
+        isDashing = true;
+        dashTimer = dashDuration;
+        dashCooldownTimer = dashCooldown;
+
+        GetComponent<PlayerHealth>()?.ActivateInvincibility(dashDuration);
+
+        Debug.Log("Player dodged!");
     }
 
     public void Attack()

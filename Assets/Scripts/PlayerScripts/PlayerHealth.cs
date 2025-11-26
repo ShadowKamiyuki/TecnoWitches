@@ -57,6 +57,12 @@ public class PlayerHealth : MonoBehaviour, IUpdatable
         }
     }
 
+    public void ActivateInvincibility(float duration)
+    {
+        isInvincible = true;
+        invincibilityTimer = duration;
+    }
+
     public void TakeDamage(float dmg)
     {
         if (isInvincible)
