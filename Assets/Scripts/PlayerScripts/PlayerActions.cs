@@ -13,9 +13,9 @@ public class PlayerActions : MonoBehaviour
     [HideInInspector] public DimensionalSwitch CurrentRoom => currentRoom;
 
     [Header("Dash Settings")]
-    public float dashForce = 20f; // force applied to player while dashing (multiplies movement direction)
-    public float dashDuration = 0.15f; // total dash duration time
-    public float dashCooldown = 1f;
+    [SerializeField] private float dashForce = 20f; // force applied to player while dashing (multiplies movement direction)
+    [SerializeField] private float dashDuration = 0.15f; // total dash duration time
+    [SerializeField] private float dashCooldown = 1f;
 
     // internal variables
     private bool isDashing = false;
@@ -69,7 +69,7 @@ public class PlayerActions : MonoBehaviour
         // Si estamos en dash, ignoramos el movimiento normal
         if (isDashing)
         {
-            rb.velocity = move3D * dashForce;
+            rb.AddForce(move3D * dashForce, ForceMode.VelocityChange);
 
             dashTimer -= Time.fixedDeltaTime;
             if (dashTimer <= 0f)
