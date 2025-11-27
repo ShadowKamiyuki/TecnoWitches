@@ -76,27 +76,24 @@ public class PlayerActions : MonoBehaviour
 
             return;
         }
-
-        // Cooldown
-        if (dashCooldownTimer > 0f)
-            dashCooldownTimer -= Time.fixedDeltaTime;
     }
 
-    public void Dodge(float cooldown)
+    public bool TryDodge(float cooldown)
     {
-        if (dashCooldownTimer > 0f)
-            return;
+        if (Time.time < dashCooldownTimer)
+            return false;
 
         if (move3D == Vector3.zero)
-            return; // evitar dash parado
+            return false; // evitar dash parado
 
         isDashing = true;
         dashTimer = dashDuration;
-        dashCooldownTimer = cooldown;
+        dashCooldownTimer = Time.time + cooldown;
 
         GetComponent<PlayerHealth>()?.ActivateInvincibility(dashDuration);
 
         Debug.Log("Player dodged!");
+        return true;
     }
 
     public void Attack()

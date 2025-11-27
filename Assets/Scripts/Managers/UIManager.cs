@@ -14,6 +14,8 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
     private Coroutine SwitchCooldownRoutine;
     [SerializeField] private Image dodgeCooldown;
     private Coroutine dodgeCooldownRoutine;
+    [SerializeField] private Image specialCooldown;
+    private Coroutine specialCooldownRoutine;
 
     public Image healthBar;
     public TextMeshProUGUI healthText;
@@ -83,18 +85,42 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
 
     private IEnumerator DodgeCooldown(float cooldown)
     {
-        float timeElapsed = 0;
+        float timer = cooldown;
 
-        while (timeElapsed < cooldown)
+        while (timer > 0)
         {
-            timeElapsed += Time.deltaTime;
-            dodgeCooldown.fillAmount = Mathf.Clamp01(1f - (timeElapsed / cooldown));
+            timer -= Time.deltaTime;
+            dodgeCooldown.fillAmount = Mathf.Clamp01(timer / cooldown);
             yield return null;
         }
 
         dodgeCooldown.fillAmount = 0f;
         dodgeCooldownRoutine = null;
     }
+
+    //public void DisplaySpecialCooldown(float cooldown)
+    //{
+    //    if (specialCooldownRoutine != null)
+    //        StopCoroutine(specialCooldownRoutine);
+
+    //    specialCooldown.fillAmount = 1f;
+    //    specialCooldownRoutine = StartCoroutine(SpecialCooldown(cooldown));
+    //}
+
+    //private IEnumerator SpecialCooldown(float cooldown)
+    //{
+    //    float timeElapsed = 0;
+
+    //    while (timeElapsed < cooldown)
+    //    {
+    //        timeElapsed += Time.deltaTime;
+    //        specialCooldown.fillAmount = Mathf.Clamp01(1f - (timeElapsed / cooldown));
+    //        yield return null;
+    //    }
+
+    //    specialCooldown.fillAmount = 0f;
+    //    specialCooldownRoutine = null;
+    //}
 
     #region OnActionButton
 

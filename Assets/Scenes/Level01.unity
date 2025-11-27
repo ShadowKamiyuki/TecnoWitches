@@ -4088,6 +4088,7 @@ MonoBehaviour:
   resultScreen: {fileID: 1382515212}
   switchCooldown: {fileID: 246681083}
   dodgeCooldown: {fileID: 845042196}
+  specialCooldown: {fileID: 626359875}
   healthBar: {fileID: 2051663087}
   healthText: {fileID: 266742640}
   energyBar: {fileID: 2005293211}
