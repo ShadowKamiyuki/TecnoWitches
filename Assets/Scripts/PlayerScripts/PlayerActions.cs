@@ -9,6 +9,7 @@ public class PlayerActions : MonoBehaviour
     private DimensionalSwitch currentRoom;
     private GameManager gm;
     private PlayerEnergy playerEnergy;
+    private IInteractable currentInteractable;
 
     [HideInInspector] public DimensionalSwitch CurrentRoom => currentRoom;
 
@@ -119,7 +120,15 @@ public class PlayerActions : MonoBehaviour
 
     public void Interact()
     {
-        Debug.Log("Interacted");
+        if (currentInteractable != null)
+        {
+            currentInteractable.Interact(this);
+            Debug.Log("Player interacted with: " + currentInteractable);
+        }
+        else
+        {
+            Debug.Log("Interacted, but nothing nearby.");
+        }
     }
 
     public void SwitchSpell()
@@ -132,17 +141,23 @@ public class PlayerActions : MonoBehaviour
     {
         DimensionalSwitch ds = other.GetComponent<DimensionalSwitch>();
         if (ds != null)
-        {
             currentRoom = ds;
-        }
+
+        IInteractable interactable = other.GetComponent<IInteractable>();
+        if (interactable != null)
+            currentInteractable = interactable;
     }
 
     private void OnTriggerExit(Collider other)
     {
         DimensionalSwitch ds = other.GetComponent<DimensionalSwitch>();
         if (ds != null && currentRoom == ds)
-        {
             currentRoom = null;
-        }
+
+        IInteractable interactable = other.GetComponent<IInteractable>();
+        if (interactable != currentInteractable)
+            return;
+
+        currentInteractable = null;
     }
 }
