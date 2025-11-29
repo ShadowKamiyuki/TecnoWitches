@@ -12,6 +12,8 @@ public class InputHandler : MonoBehaviour, IUpdatable
     private ICommand specialAttackCommand;
     private ICommand switchDimensionCommand;
     private ICommand interactCommand;
+    private ICommand previousCommand;
+    private ICommand nextCommand;
 
     [HideInInspector] public Vector2 moveDir;
 
@@ -43,6 +45,7 @@ public class InputHandler : MonoBehaviour, IUpdatable
         specialAttackCommand = new ShootSpecialCommand(playerActions);
         switchDimensionCommand = new SwitchCommand(playerActions, switchCooldown);
         interactCommand = new InteractCommand(playerActions);
+
     }
 
     private void OnEnable()

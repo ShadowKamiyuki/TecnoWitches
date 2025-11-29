@@ -137,9 +137,13 @@ public class PlayerActions : MonoBehaviour
         }
     }
 
-    public void SwitchSpell()
+    public void PreviousSpell()
     {
+        Debug.Log("Switch Spell");
+    }
 
+    public void NextSpell()
+    {
         Debug.Log("Switch Spell");
     }
 
