@@ -9,9 +9,19 @@ public class PlayerActions : MonoBehaviour
     private DimensionalSwitch currentRoom;
     private GameManager gm;
     private PlayerEnergy playerEnergy;
+    private IInteractable currentInteractable;
 
     [HideInInspector] public DimensionalSwitch CurrentRoom => currentRoom;
-    
+
+    [Header("Dash Settings")]
+    [SerializeField] private float dashForce = 20f; // force applied to player while dashing (multiplies movement direction)
+    [SerializeField] private float dashDuration = 0.15f; // total dash duration time
+
+    // internal variables
+    private bool isDashing = false;
+    private float dashTimer = 0f;
+    private float dashCooldownTimer = 0f;
+
     private void Start()
     {
         player = GetComponent<PlayerStats>();
@@ -22,6 +32,7 @@ public class PlayerActions : MonoBehaviour
 
     private void FixedUpdate()
     {
+        DodgeMovement();
         Move();
     }
 
@@ -53,9 +64,37 @@ public class PlayerActions : MonoBehaviour
         rb.velocity = Vector3.zero;
     }
 
-    public void Dodge()
+    private void DodgeMovement()
     {
-        Debug.Log("Player jumped!");
+        // Si estamos en dash, ignoramos el movimiento normal
+        if (isDashing)
+        {
+            rb.AddForce(move3D * dashForce, ForceMode.VelocityChange);
+
+            dashTimer -= Time.fixedDeltaTime;
+            if (dashTimer <= 0f)
+                isDashing = false;
+
+            return;
+        }
+    }
+
+    public bool TryDodge(float cooldown)
+    {
+        if (Time.time < dashCooldownTimer)
+            return false;
+
+        if (move3D == Vector3.zero)
+            return false; // evitar dash parado
+
+        isDashing = true;
+        dashTimer = dashDuration;
+        dashCooldownTimer = Time.time + cooldown;
+
+        GetComponent<PlayerHealth>()?.ActivateInvincibility(dashDuration);
+
+        Debug.Log("Player dodged!");
+        return true;
     }
 
     public void Attack()
@@ -81,7 +120,15 @@ public class PlayerActions : MonoBehaviour
 
     public void Interact()
     {
-        Debug.Log("Interacted");
+        if (currentInteractable != null)
+        {
+            currentInteractable.Interact(this);
+            Debug.Log("Player interacted with: " + currentInteractable);
+        }
+        else
+        {
+            Debug.Log("Interacted, but nothing nearby.");
+        }
     }
 
     public void SwitchSpell()
@@ -94,17 +141,23 @@ public class PlayerActions : MonoBehaviour
     {
         DimensionalSwitch ds = other.GetComponent<DimensionalSwitch>();
         if (ds != null)
-        {
             currentRoom = ds;
-        }
+
+        IInteractable interactable = other.GetComponent<IInteractable>();
+        if (interactable != null)
+            currentInteractable = interactable;
     }
 
     private void OnTriggerExit(Collider other)
     {
         DimensionalSwitch ds = other.GetComponent<DimensionalSwitch>();
         if (ds != null && currentRoom == ds)
-        {
             currentRoom = null;
-        }
+
+        IInteractable interactable = other.GetComponent<IInteractable>();
+        if (interactable != currentInteractable)
+            return;
+
+        currentInteractable = null;
     }
 }

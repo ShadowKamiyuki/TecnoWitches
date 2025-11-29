@@ -1,17 +1,21 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
 public class UIManager : MonoBehaviourSingleton<UIManager>
 {
+    private Dictionary<Image, Coroutine> cooldownRoutines = new Dictionary<Image, Coroutine>();
+
     [Header("Screens")]
     public GameObject pauseScreen;
     public GameObject resultScreen;
 
     [Header("HUD elements")]
     [SerializeField] private Image switchCooldown;
-    private Coroutine cooldownRoutine;
+    [SerializeField] private Image dodgeCooldown;
+    [SerializeField] private Image specialCooldown;
 
     public Image healthBar;
     public TextMeshProUGUI healthText;
@@ -46,29 +50,49 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
         Destroy(UIManager.Instance.gameObject);
     }
 
-    public void DisplayCooldown(float cooldown)
+    public void DisplayCooldown(Image cooldownImage, float cooldown, System.Action onFinish = null)
     {
-        if (cooldownRoutine != null)
-            StopCoroutine(cooldownRoutine);
+        // Si ya hay un cooldown activo para esta imagen -> cancelarlo
+        if (cooldownRoutines.TryGetValue(cooldownImage, out Coroutine routine) && routine != null)
+            StopCoroutine(routine);
 
-        switchCooldown.fillAmount = 1f;
-        cooldownRoutine = StartCoroutine(Cooldown(cooldown));
+        // Reiniciar fillAmount
+        cooldownImage.fillAmount = 1f;
+
+        // Crear nueva rutina
+        Coroutine newRoutine = StartCoroutine(CooldownRoutine(cooldownImage, cooldown, onFinish));
+
+        // Guardar referencia
+        cooldownRoutines[cooldownImage] = newRoutine;
     }
 
-    private IEnumerator Cooldown(float cooldown)
+    private IEnumerator CooldownRoutine(Image target, float cooldown, System.Action onFinish)
     {
-        float timeElapsed = 0;
+        float timer = cooldown;
 
-        while (timeElapsed < cooldown)
+        while (timer > 0f)
         {
-            timeElapsed += Time.deltaTime;
-            switchCooldown.fillAmount = Mathf.Clamp01(1f - (timeElapsed / cooldown));
+            timer -= Time.deltaTime;
+            target.fillAmount = timer / cooldown;
             yield return null;
         }
 
-        switchCooldown.fillAmount = 0f;
-        cooldownRoutine = null;
+        target.fillAmount = 0f;
+
+        // Ejecutar callback opcional
+        onFinish?.Invoke();
+
+        cooldownRoutines[target] = null;
     }
+
+    public void DisplayDodgeCooldown(float cooldown) =>
+        DisplayCooldown(dodgeCooldown, cooldown);
+
+    public void DisplaySwitchCooldown(float cooldown) =>
+        DisplayCooldown(switchCooldown, cooldown);
+
+    public void DisplaySpecialCooldown(float cooldown) =>
+        DisplayCooldown(specialCooldown, cooldown);
 
     #region OnActionButton
 
