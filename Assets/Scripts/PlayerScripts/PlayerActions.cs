@@ -10,6 +10,10 @@ public class PlayerActions : MonoBehaviour
     private GameManager gm;
     private PlayerEnergy playerEnergy;
     private IInteractable currentInteractable;
+    private ISpell currentSpell;
+
+    [Header("Shooting Settings")]
+    [SerializeField] private IsometricCrosshair isoCursor;
 
     [HideInInspector] public DimensionalSwitch CurrentRoom => currentRoom;
 
@@ -28,6 +32,8 @@ public class PlayerActions : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         playerEnergy = GetComponent<PlayerEnergy>();
         gm = ServiceLocator.Get<GameManager>();
+
+        currentSpell = GetComponent<TestSpell>();
     }
 
     private void FixedUpdate()
@@ -99,6 +105,10 @@ public class PlayerActions : MonoBehaviour
 
     public void Attack()
     {
+        // calculate direction to the cursor
+        //Vector3 direction = (isoCursor.CursorPosition - firePoint.position).normalized;
+        //currentSpell.Attack(direction, firePoint);
+
         Debug.Log("Player attacked!");
     }
 
@@ -125,17 +135,15 @@ public class PlayerActions : MonoBehaviour
             currentInteractable.Interact(this);
             Debug.Log("Player interacted with: " + currentInteractable);
         }
-        else
-        {
-            Debug.Log("Interacted, but nothing nearby.");
-        }
     }
 
     public void SwitchSpell()
     {
+
         Debug.Log("Switch Spell");
     }
 
+    #region Triggers
     // triggers when the player is inside a room with dimensional switch
     private void OnTriggerEnter(Collider other)
     {
@@ -160,4 +168,5 @@ public class PlayerActions : MonoBehaviour
 
         currentInteractable = null;
     }
+    #endregion
 }

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class IsoCursor : MonoBehaviour, IUpdatable
+public class IsometricCrosshair : MonoBehaviour, IUpdatable
 {
     [Header("Cursor Settings")]
     [SerializeField] private Camera mainCamera;
@@ -10,6 +10,8 @@ public class IsoCursor : MonoBehaviour, IUpdatable
     private bool isDigital;
     private PlayerControls controls;
     private GameManager gm;
+
+    public Vector3 CursorPosition => transform.position;
 
     private void Awake()
     {
