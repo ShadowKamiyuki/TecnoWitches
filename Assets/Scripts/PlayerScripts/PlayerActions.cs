@@ -10,10 +10,7 @@ public class PlayerActions : MonoBehaviour
     private GameManager gm;
     private PlayerEnergy playerEnergy;
     private IInteractable currentInteractable;
-    private ISpell currentSpell;
-
-    [Header("Shooting Settings")]
-    [SerializeField] private IsometricCrosshair isoCursor;
+    private SpellCaster spellCaster;
 
     [HideInInspector] public DimensionalSwitch CurrentRoom => currentRoom;
 
@@ -31,9 +28,8 @@ public class PlayerActions : MonoBehaviour
         player = GetComponent<PlayerStats>();
         rb = GetComponent<Rigidbody>();
         playerEnergy = GetComponent<PlayerEnergy>();
+        spellCaster = GetComponent<SpellCaster>();
         gm = ServiceLocator.Get<GameManager>();
-
-        currentSpell = GetComponent<TestSpell>();
     }
 
     private void FixedUpdate()
@@ -105,9 +101,7 @@ public class PlayerActions : MonoBehaviour
 
     public void Attack()
     {
-        // calculate direction to the cursor
-        //Vector3 direction = (isoCursor.CursorPosition - firePoint.position).normalized;
-        //currentSpell.Attack(direction, firePoint);
+        spellCaster.HandleSpell();
 
         Debug.Log("Player attacked!");
     }
@@ -139,11 +133,13 @@ public class PlayerActions : MonoBehaviour
 
     public void PreviousSpell()
     {
+        spellCaster.SwitchSpell(-1);
         Debug.Log("Switch Spell");
     }
 
     public void NextSpell()
     {
+        spellCaster.SwitchSpell(1);
         Debug.Log("Switch Spell");
     }
 
