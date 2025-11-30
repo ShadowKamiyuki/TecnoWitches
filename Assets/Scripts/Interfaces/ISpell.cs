@@ -2,6 +2,6 @@ using UnityEngine;
 
 public interface ISpell
 {
-    public void Attack(Vector3 direction, Transform firePoint);
+    public void Cast(SpellContext context);
     public string GetName();
 }

@@ -9,10 +9,11 @@ public class SpellCaster : MonoBehaviour
     [SerializeField] private float firingHeight;
 
     [Header("Spell List")]
-    [SerializeField] private List<ISpell> availableSpells; // Todos los hechizos disponibles
+    [SerializeField] private List<SpellScriptableObject> availableSpells;
+    private SpellScriptableObject currentSpell;
+    [HideInInspector] public SpellScriptableObject GetCurrentSpell() => currentSpell;
 
     private int currentSpellIndex = 0;
-    private ISpell currentSpell;
 
     private void Start()
     {
@@ -26,9 +27,9 @@ public class SpellCaster : MonoBehaviour
     public void HandleSpell()
     {
         Vector3 direction = (isoCursor.CursorPosition - firePoint.position).normalized;
-        direction.y = firingHeight;
+        direction = new Vector3(direction.x, firingHeight, direction.z).normalized;
 
-        currentSpell.Attack(direction, firePoint);
+        //currentSpell.Attack(direction, firePoint);
     }
 
     public void SwitchSpell(int delta)
@@ -43,7 +44,7 @@ public class SpellCaster : MonoBehaviour
         Debug.Log("Switched to spell: " + currentSpell.GetName());
     }
 
-    public void AddNewSpell(ISpell newSpell)
+    public void AddNewSpell(SpellScriptableObject newSpell)
     {
         if (newSpell == null)
         {

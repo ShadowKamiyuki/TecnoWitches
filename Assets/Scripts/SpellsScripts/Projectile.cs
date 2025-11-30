@@ -1,38 +1,35 @@
 using UnityEngine;
-using UnityEngine.Pool;
 
 public class Projectile : MonoBehaviour
 {
-    private IObjectPool<GameObject> pool;
-    private float lifeTime = 3f;
-    private float timer;
-    private Rigidbody rb;
+    private PooledProjectile pooled;
+    private float speed;
+    private float damage;
+    private GameObject caster;
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody>();
+        pooled = GetComponent<PooledProjectile>();
     }
 
-    public void SetPool(IObjectPool<GameObject> pool)
+    public void Launch(Vector3 direction, float speed, float damage, GameObject caster)
     {
-        this.pool = pool;
-    }
+        this.speed = speed;
+        this.damage = damage;
+        this.caster = caster;
 
-    private void OnEnable()
-    {
-        timer = lifeTime;
-    }
-
-    private void Update()
-    {
-        timer -= Time.deltaTime;
-        if (timer <= 0)
-            pool.Release(gameObject);
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.velocity = direction.normalized * speed;
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        rb.velocity = Vector3.zero;
-        pool.Release(gameObject);
+        // Aquí podrías manejar daño al enemigo
+
+        // Volver al pool
+        pooled.ReturnToPool();
     }
 }
