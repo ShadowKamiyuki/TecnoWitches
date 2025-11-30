@@ -3,25 +3,27 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerActions : MonoBehaviour
 {
-    private Rigidbody rb;
-    private PlayerStats player;
-    private Vector3 move3D;
-    private DimensionalSwitch currentRoom;
-    private GameManager gm;
-    private PlayerEnergy playerEnergy;
-    private IInteractable currentInteractable;
-    private SpellCaster spellCaster;
-
-    [HideInInspector] public DimensionalSwitch CurrentRoom => currentRoom;
-
     [Header("Dash Settings")]
     [SerializeField] private float dashForce = 20f; // force applied to player while dashing (multiplies movement direction)
     [SerializeField] private float dashDuration = 0.15f; // total dash duration time
+
+    // references
+    private Rigidbody rb;
+    private PlayerStats player;
+    private DimensionalSwitch currentRoom;
+    private GameManager gm;
+    private PlayerEnergy playerEnergy;
+    private SpellCaster spellCaster;
+
+    // properties
+    [HideInInspector] public DimensionalSwitch CurrentRoom => currentRoom;
 
     // internal variables
     private bool isDashing = false;
     private float dashTimer = 0f;
     private float dashCooldownTimer = 0f;
+    private Vector3 move3D;
+    private IInteractable currentInteractable;
 
     private void Start()
     {
@@ -68,7 +70,7 @@ public class PlayerActions : MonoBehaviour
 
     private void DodgeMovement()
     {
-        // Si estamos en dash, ignoramos el movimiento normal
+        // while in dash, we ignore the normal movement
         if (isDashing)
         {
             rb.AddForce(move3D * dashForce, ForceMode.VelocityChange);
@@ -87,7 +89,7 @@ public class PlayerActions : MonoBehaviour
             return false;
 
         if (move3D == Vector3.zero)
-            return false; // evitar dash parado
+            return false; // avoid dash idle
 
         isDashing = true;
         dashTimer = dashDuration;
@@ -101,8 +103,7 @@ public class PlayerActions : MonoBehaviour
 
     public void Attack()
     {
-        spellCaster.HandleSpell();
-
+        spellCaster.CastSpell();
         Debug.Log("Player attacked!");
     }
 

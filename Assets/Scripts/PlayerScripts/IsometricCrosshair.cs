@@ -7,10 +7,12 @@ public class IsometricCrosshair : MonoBehaviour, IUpdatable
     [SerializeField] private float floorHeightPhysical;
     [SerializeField] private float floorHeightDigital;
 
+    // internal variables
     private bool isDigital;
     private PlayerControls controls;
     private GameManager gm;
 
+    // properties
     public Vector3 CursorPosition => transform.position;
 
     private void Awake()
@@ -23,6 +25,7 @@ public class IsometricCrosshair : MonoBehaviour, IUpdatable
         controls.Player.Enable();
         ServiceLocator.Get<CustomUpdateManager>().Register(this);
         gm = ServiceLocator.Get<GameManager>();
+
         DimensionalSwitch.OnDimensionChanged += UpdateDimension;
     }
 
