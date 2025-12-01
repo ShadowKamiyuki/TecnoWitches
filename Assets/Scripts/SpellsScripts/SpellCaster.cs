@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -12,20 +13,19 @@ public class SpellCaster : MonoBehaviour
     [SerializeField] private Transform firePoint; // from where we shoot
 
     [Header("Spell List")]
-    //[SerializeField] private List<SpellScriptableObject> availableSpells;
-    //private SpellScriptableObject currentSpell;
-    //[HideInInspector] public SpellScriptableObject GetCurrentSpell() => currentSpell;
+    [SerializeField] private List<SpellStrategy> availableSpells;
+    private SpellStrategy currentSpell;
 
     private int currentSpellIndex = 0;
 
     private void Start()
     {
         // set the current selected spell to the first spell available
-        //if (availableSpells.Count > 0)
-        //{
-        //    currentSpellIndex = 0;
-        //    currentSpell = availableSpells[currentSpellIndex];
-        //}
+        if (availableSpells.Count > 0)
+        {
+            currentSpellIndex = 0;
+            currentSpell = availableSpells[currentSpellIndex];
+        }
     }
 
     public void CastSpell()
@@ -33,22 +33,22 @@ public class SpellCaster : MonoBehaviour
         // we get the position of the cursor to set the direction to shoot to.
         Vector3 direction = (isoCursor.CursorPosition - firePoint.position).normalized;
 
-        //currentSpell.Attack(direction, firePoint);
+        currentSpell.Cast(new SpellContext(direction, firePoint, gameObject));
     }
 
     public void SwitchSpell(int delta)
     {
-        //if (availableSpells.Count == 0) return;
+        if (availableSpells.Count == 0) return;
 
-        //currentSpellIndex += delta;
-        //if (currentSpellIndex < 0) currentSpellIndex = availableSpells.Count - 1;
-        //if (currentSpellIndex >= availableSpells.Count) currentSpellIndex = 0;
+        currentSpellIndex += delta;
+        if (currentSpellIndex < 0) currentSpellIndex = availableSpells.Count - 1;
+        if (currentSpellIndex >= availableSpells.Count) currentSpellIndex = 0;
 
-        //currentSpell = availableSpells[currentSpellIndex];
-        //Debug.Log("Switched to spell: " + currentSpell.GetName());
+        currentSpell = availableSpells[currentSpellIndex];
+        Debug.Log("Switched spell");
     }
 
-    public void AddNewSpell(SpellScriptableObject newSpell)
+    public void AddNewSpell(SpellStrategy newSpell)
     {
         if (newSpell == null)
         {
@@ -57,14 +57,12 @@ public class SpellCaster : MonoBehaviour
         }
 
         // evitar duplicados
-        //if (availableSpells.Contains(newSpell))
-        //{
-        //    Debug.Log($"Spell '{newSpell.GetName()}' already learned.");
-        //    return;
-        //}
+        if (availableSpells.Contains(newSpell))
+        {
+            Debug.Log("Spell already learned.");
+            return;
+        }
 
-        //availableSpells.Add(newSpell);
-
-        Debug.Log($"New spell learned: {newSpell.GetName()}");
+        availableSpells.Add(newSpell);
     }
 }

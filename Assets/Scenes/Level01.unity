@@ -2081,9 +2081,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isoCursor: {fileID: 703655560}
   firePoint: {fileID: 226474489}
-  firingHeight: 0
   availableSpells:
-  - {fileID: 11400000, guid: 525edfb4ec1187142a132b8aa473be30, type: 2}
+  - {fileID: 11400000, guid: 9cf34b3ec72452744bcc67343f1bd4dc, type: 2}
 --- !u!1 &703655555
 GameObject:
   m_ObjectHideFlags: 0
