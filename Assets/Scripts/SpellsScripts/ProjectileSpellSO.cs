@@ -8,9 +8,14 @@ public class ProjectileSpellStrategy : SpellStrategy
 
     public override void Cast(SpellContext ctx)
     {
-        GameObject projectile = Instantiate(prefab, ctx.firePoint);
+        GameObject projectile = Instantiate(prefab, ctx.firePoint.position, Quaternion.identity);
         Rigidbody rb = projectile.GetComponent<Rigidbody>();
-        rb.velocity = ctx.direction;
+        Debug.Log("Direction: " + ctx.direction);
+
+        if (rb != null)
+        {
+            rb.velocity = ctx.direction * 10;
+        }
 
         Debug.Log("cast");
         Destroy(projectile, 3f);
