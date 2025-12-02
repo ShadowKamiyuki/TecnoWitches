@@ -2081,8 +2081,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isoCursor: {fileID: 703655560}
   firePoint: {fileID: 226474489}
+  spellFactory: {fileID: 11400000, guid: a6090b3c3b18a68489a3b3f6640802f6, type: 2}
   availableSpells:
-  - {fileID: 11400000, guid: 9cf34b3ec72452744bcc67343f1bd4dc, type: 2}
+  - {fileID: 11400000, guid: 29e3e76e33245404891643668ad6f6b5, type: 2}
 --- !u!1 &703655555
 GameObject:
   m_ObjectHideFlags: 0

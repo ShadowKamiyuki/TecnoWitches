@@ -8,14 +8,17 @@ using UnityEngine;
 /// </summary>
 public class SpellCaster : MonoBehaviour
 {
-    [Header("Transform settings")]
+    [Header("References")]
     [SerializeField] private IsometricCrosshair isoCursor;
     [SerializeField] private Transform firePoint; // from where we shoot
 
-    [Header("Spell List")]
-    [SerializeField] private List<SpellStrategy> availableSpells;
-    private SpellStrategy currentSpell;
+    [Header("Factory")]
+    [SerializeField] private SpellFactory spellFactory;
 
+    [Header("Spell List")]
+    [SerializeField] private List<Spell> availableSpells;
+
+    private Spell currentSpell;
     private int currentSpellIndex = 0;
 
     private void Start()
@@ -40,15 +43,13 @@ public class SpellCaster : MonoBehaviour
     {
         if (availableSpells.Count == 0) return;
 
-        currentSpellIndex += delta;
-        if (currentSpellIndex < 0) currentSpellIndex = availableSpells.Count - 1;
-        if (currentSpellIndex >= availableSpells.Count) currentSpellIndex = 0;
-
+        currentSpellIndex = (currentSpellIndex + delta + availableSpells.Count) % availableSpells.Count;
         currentSpell = availableSpells[currentSpellIndex];
-        Debug.Log("Switched spell");
+
+        Debug.Log("Switched to: " + currentSpell.id);
     }
 
-    public void AddNewSpell(SpellStrategy newSpell)
+    public void AddNewSpell(Spell newSpell)
     {
         if (newSpell == null)
         {
@@ -64,5 +65,10 @@ public class SpellCaster : MonoBehaviour
         }
 
         availableSpells.Add(newSpell);
+    }
+
+    public void EquipSpell(Spell spell)
+    {
+        currentSpell = spell;
     }
 }

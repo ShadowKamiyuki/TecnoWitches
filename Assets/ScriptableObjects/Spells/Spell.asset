@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 713a357709bf10848b6a6d3ef678ab0e, type: 3}
+  m_Name: Spell
+  m_EditorClassIdentifier: 
+  id: fireball
+  strategy: {fileID: 11400000, guid: 9cf34b3ec72452744bcc67343f1bd4dc, type: 2}
