@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,67 +9,72 @@ using UnityEngine;
 /// </summary>
 public class SpellCaster : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField] private IsometricCrosshair isoCursor;
+    [Header("Target objects")]
+    [SerializeField] private IsometricCrosshair isoCursor; // target point
     [SerializeField] private Transform firePoint; // from where we shoot
 
-    [Header("Factory")]
-    [SerializeField] private SpellFactory spellFactory;
+    [Header("Spells Available")]
+    [SerializeField] private List<SpellData> availableSpellData; // the spells the player have
 
-    [Header("Spell List")]
-    [SerializeField] private List<Spell> availableSpells;
+    private List<RuntimeSpell> runtimeSpells;
+    private RuntimeSpell currentSpell; // selected spell
+    private int currentSpellIndex = 0; // index of the selected spell
 
-    private Spell currentSpell;
-    private int currentSpellIndex = 0;
+    public event Action<SpellData> OnSpellChanged; // event to notify other systems (mainly UI)
 
     private void Start()
     {
-        // set the current selected spell to the first spell available
-        if (availableSpells.Count > 0)
+        // Crear instancias runtime
+        runtimeSpells = new List<RuntimeSpell>();
+        foreach (var data in availableSpellData)
+            runtimeSpells.Add(new RuntimeSpell(data));
+
+        if (runtimeSpells.Count > 0)
+            SetSpell(0);
+    }
+
+    private void Update()
+    {
+        // we get the position of the cursor to set the direction to shoot to.
+        Vector3 direction = (isoCursor.CursorPosition - firePoint.position).normalized;
+
+        // Actualizar cooldowns y castTimers
+        foreach (var spell in runtimeSpells)
         {
-            currentSpellIndex = 0;
-            currentSpell = availableSpells[currentSpellIndex];
+            spell.Tick(Time.deltaTime, new SpellContext(direction, firePoint, gameObject));
         }
     }
 
     public void CastSpell()
     {
-        // we get the position of the cursor to set the direction to shoot to.
-        Vector3 direction = (isoCursor.CursorPosition - firePoint.position).normalized;
+        if (currentSpell == null || !currentSpell.CanCast)
+            return;
 
-        currentSpell.Cast(new SpellContext(direction, firePoint, gameObject));
+        currentSpell.StartCast();
+    }
+
+    private void SetSpell(int index)
+    {
+        currentSpellIndex = index;
+        currentSpell = runtimeSpells[index];
+        OnSpellChanged?.Invoke(currentSpell.data);
     }
 
     public void SwitchSpell(int delta)
     {
-        if (availableSpells.Count == 0) return;
+        if (runtimeSpells.Count == 0)
+            return;
 
-        currentSpellIndex = (currentSpellIndex + delta + availableSpells.Count) % availableSpells.Count;
-        currentSpell = availableSpells[currentSpellIndex];
-
-        Debug.Log("Switched to: " + currentSpell.id);
+        int newIndex = (currentSpellIndex + delta + runtimeSpells.Count) % runtimeSpells.Count;
+        SetSpell(newIndex);
     }
 
-    public void AddNewSpell(Spell newSpell)
+    public void AddNewSpell(SpellData newData)
     {
-        if (newSpell == null)
-        {
-            Debug.LogWarning("Trying to add a null spell.");
+        if (newData == null || availableSpellData.Contains(newData))
             return;
-        }
 
-        // evitar duplicados
-        if (availableSpells.Contains(newSpell))
-        {
-            Debug.Log("Spell already learned.");
-            return;
-        }
-
-        availableSpells.Add(newSpell);
-    }
-
-    public void EquipSpell(Spell spell)
-    {
-        currentSpell = spell;
+        availableSpellData.Add(newData);
+        runtimeSpells.Add(new RuntimeSpell(newData));
     }
 }

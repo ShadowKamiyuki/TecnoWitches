@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b58dde56b6259be4cbf89fcce7a5a9b6, type: 3}
+  m_Name: Fireball
+  m_EditorClassIdentifier: 
+  icon: {fileID: 0}
+  label: Fireball
+  castTime: 0.24
+  cooldown: 1
+  effects:
+  - rid: 3363272173642579969
+  - rid: 3363272218133397504
+  references:
+    version: 2
+    RefIds:
+    - rid: 3363272173642579969
+      type: {class: DamageEffect, ns: , asm: Assembly-CSharp}
+      data:
+        damage: 10
+    - rid: 3363272218133397504
+      type: {class: ProjectileEffect, ns: , asm: Assembly-CSharp}
+      data:
+        projectilePrefab: {fileID: 3171535114559731944, guid: 6c62c331961c3ab45af1e81286094bc1,
+          type: 3}
+        speed: 10
