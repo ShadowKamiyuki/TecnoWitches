@@ -7,6 +7,9 @@ public class PoolManager : MonoBehaviourSingleton<PoolManager>
     // key = prefab original
     // value = cola de instancias desactivadas listas para reutilizar
     private Dictionary<GameObject, Queue<GameObject>> pools = new();
+    private Dictionary<GameObject, Transform> poolParents = new();
+
+    [SerializeField] private Transform poolsRoot; // opcional
 
     protected override void OnAwaken()
     {
@@ -26,12 +29,14 @@ public class PoolManager : MonoBehaviourSingleton<PoolManager>
         if (!pools.ContainsKey(prefab))
             pools[prefab] = new Queue<GameObject>();
 
+        Transform parent = GetPoolParent(prefab);
+
         for (int i = 0; i < amount; i++)
         {
-            GameObject obj = Instantiate(prefab);
+            GameObject obj = Instantiate(prefab, parent);
             obj.SetActive(false);
 
-            // Guardamos referencia al prefab original (importante!)
+            // save reference to original prefab
             var po = obj.AddComponent<PoolableObject>();
             po.OriginalPrefab = prefab;
 
@@ -52,6 +57,7 @@ public class PoolManager : MonoBehaviourSingleton<PoolManager>
         if (pools[prefab].Count > 0)
         {
             obj = pools[prefab].Dequeue();
+            obj.transform.SetParent(null); // libre en escena
             obj.transform.SetPositionAndRotation(pos, rot);
             obj.SetActive(true);
         }
@@ -59,10 +65,7 @@ public class PoolManager : MonoBehaviourSingleton<PoolManager>
         {
             obj = Instantiate(prefab, pos, rot);
 
-            var po = obj.GetComponent<PoolableObject>();
-            if (po == null)
-                po = obj.AddComponent<PoolableObject>();
-
+            var po = obj.GetComponent<PoolableObject>() ?? obj.AddComponent<PoolableObject>();
             po.OriginalPrefab = prefab;
         }
 
@@ -84,9 +87,26 @@ public class PoolManager : MonoBehaviourSingleton<PoolManager>
         if (!pools.ContainsKey(po.OriginalPrefab))
             pools[po.OriginalPrefab] = new Queue<GameObject>();
 
-        instance.transform.SetParent(null);
+        Transform parent = GetPoolParent(po.OriginalPrefab);
+
         instance.SetActive(false);
+        instance.transform.SetParent(parent);
 
         pools[po.OriginalPrefab].Enqueue(instance);
+    }
+
+    private Transform GetPoolParent(GameObject prefab)
+    {
+        if (poolParents.TryGetValue(prefab, out Transform parent))
+            return parent;
+
+        GameObject go = new GameObject(prefab.name + "_Pool");
+        parent = go.transform;
+
+        if (poolsRoot != null)
+            parent.SetParent(poolsRoot);
+
+        poolParents[prefab] = parent;
+        return parent;
     }
 }
