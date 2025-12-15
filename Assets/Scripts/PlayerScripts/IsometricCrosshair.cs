@@ -1,8 +1,15 @@
 using UnityEngine;
 
+public enum CursorState
+{
+    Default,
+    Clicked,
+}
+
 public class IsometricCrosshair : MonoBehaviour, IUpdatable
 {
     [Header("Cursor Settings")]
+    [SerializeField] private Sprite[] cursorSprite;
     [SerializeField] private Camera mainCamera;
     [SerializeField] private float floorHeightPhysical;
     [SerializeField] private float floorHeightDigital;
@@ -11,6 +18,7 @@ public class IsometricCrosshair : MonoBehaviour, IUpdatable
     private bool isDigital;
     private PlayerControls controls;
     private GameManager gm;
+    private SpriteRenderer spriteRenderer;
 
     // properties
     public Vector3 CursorPosition => transform.position;
@@ -18,6 +26,12 @@ public class IsometricCrosshair : MonoBehaviour, IUpdatable
     private void Awake()
     {
         controls = new PlayerControls();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+    }
+
+    private void Start()
+    {
+        spriteRenderer.sprite = cursorSprite[0];
     }
 
     private void OnEnable()
@@ -69,5 +83,10 @@ public class IsometricCrosshair : MonoBehaviour, IUpdatable
     private void UpdateDimension(bool isDigital)
     {
         this.isDigital = isDigital;
+    }
+
+    public void SetCursorState(CursorState state)
+    {
+        spriteRenderer.sprite = cursorSprite[(int)state];
     }
 }

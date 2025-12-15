@@ -4,6 +4,7 @@ using UnityEngine;
 public class ProjectileBehaviour : MonoBehaviour
 {
     [SerializeField] private float lifetime = 5f;
+
     private Rigidbody rb;
     private Collider col;
     private bool isDespawning;
