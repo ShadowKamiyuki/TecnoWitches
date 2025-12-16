@@ -7,7 +7,7 @@ using UnityEngine;
 /// We use methods to cast a spell, to change the spell and add new spells.
 /// To cast we have the settings of the isometric cursor and a firing point from where the spell origins.
 /// </summary>
-public class SpellCaster : MonoBehaviour
+public class SpellCaster : MonoBehaviour, IUpdatable
 {
     [Header("Target objects")]
     [SerializeField] private IsometricCrosshair isoCursor; // target point
@@ -33,7 +33,7 @@ public class SpellCaster : MonoBehaviour
             SetSpell(0);
     }
 
-    private void Update()
+    public void Tick(float deltaTime)
     {
         // we get the position of the cursor to set the direction to shoot to.
         Vector3 direction = (isoCursor.CursorPosition - firePoint.position).normalized;
@@ -76,5 +76,20 @@ public class SpellCaster : MonoBehaviour
 
         availableSpellData.Add(newData);
         runtimeSpells.Add(new RuntimeSpell(newData));
+    }
+
+    private void OnEnable()
+    {
+        ServiceLocator.Get<CustomUpdateManager>().Register(this);
+    }
+
+    private void OnDisable()
+    {
+        CustomUpdateManager updateManager = ServiceLocator.Get<CustomUpdateManager>();
+
+        if (updateManager != null)
+        {
+            updateManager.Unregister(this);
+        }
     }
 }
