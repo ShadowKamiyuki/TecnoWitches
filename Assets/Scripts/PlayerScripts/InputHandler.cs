@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 public class InputHandler : MonoBehaviour, IUpdatable
 {
     private PlayerControls controls;
+    private bool isAttackHeld;
 
     private ICommand moveCommand;
     private ICommand dodgeCommand;
@@ -12,11 +13,14 @@ public class InputHandler : MonoBehaviour, IUpdatable
     private ICommand specialAttackCommand;
     private ICommand switchDimensionCommand;
     private ICommand interactCommand;
+    private ICommand previousCommand;
+    private ICommand nextCommand;
 
     [HideInInspector] public Vector2 moveDir;
 
     [SerializeField] private float switchCooldown;
     [SerializeField] private float dodgeCooldown;
+    [SerializeField] private IsometricCrosshair crosshair;
 
     private void Awake()
     {
@@ -43,6 +47,8 @@ public class InputHandler : MonoBehaviour, IUpdatable
         specialAttackCommand = new ShootSpecialCommand(playerActions);
         switchDimensionCommand = new SwitchCommand(playerActions, switchCooldown);
         interactCommand = new InteractCommand(playerActions);
+        nextCommand = new NextCommand(playerActions);
+        previousCommand = new PreviousCommand(playerActions);
     }
 
     private void OnEnable()
@@ -50,23 +56,29 @@ public class InputHandler : MonoBehaviour, IUpdatable
         controls.Player.Enable();
 
         // Suscribimos eventos
-        controls.Player.Attack.performed += OnAttack;
+        controls.Player.Attack.started += OnAttackStarted;
+        controls.Player.Attack.canceled += OnAttackCanceled;
         controls.Player.Dodge.performed += OnDodge;
         controls.Player.Pause.performed += OnPause;
         controls.Player.SpecialAttack.performed += OnSpecialAttack;
         controls.Player.SwitchDimension.performed += OnDimensionSwitch;
         controls.Player.Interact.performed += OnInteraction;
+        controls.Player.Next.performed += OnNextSpell;
+        controls.Player.Previous.performed += OnPreviousSpell;
     }
 
     private void OnDisable()
     {
         // Limpieza
-        controls.Player.Attack.performed -= OnAttack;
+        controls.Player.Attack.started -= OnAttackStarted;
+        controls.Player.Attack.canceled -= OnAttackCanceled;
         controls.Player.Dodge.performed -= OnDodge;
         controls.Player.Pause.performed -= OnPause;
         controls.Player.SpecialAttack.performed -= OnSpecialAttack;
         controls.Player.SwitchDimension.performed -= OnDimensionSwitch;
         controls.Player.Interact.performed -= OnInteraction;
+        controls.Player.Next.performed -= OnNextSpell;
+        controls.Player.Previous.performed -= OnPreviousSpell;
 
         controls.Player.Disable();
     }
@@ -87,6 +99,15 @@ public class InputHandler : MonoBehaviour, IUpdatable
             return;
 
         InputManagement();
+        HandleAttackInput();
+    }
+
+    private void HandleAttackInput()
+    {
+        if (!isAttackHeld)
+            return;
+
+        attackCommand.Execute(); // internamente llama a RuntimeSpell.StartCast()
     }
 
     private void InputManagement()
@@ -99,12 +120,22 @@ public class InputHandler : MonoBehaviour, IUpdatable
         moveCommand.Execute();
     }
 
-    private void OnAttack(InputAction.CallbackContext context)
+    private void OnAttackStarted(InputAction.CallbackContext context)
     {
         if (ServiceLocator.Get<GameManager>().currentState.gameState != GameManager.GameState.Gameplay)
             return;
 
-        attackCommand.Execute();
+        isAttackHeld = true;
+        crosshair.SetCursorState(CursorState.Clicked);
+    }
+
+    private void OnAttackCanceled(InputAction.CallbackContext context)
+    {
+        if (ServiceLocator.Get<GameManager>().currentState.gameState != GameManager.GameState.Gameplay)
+            return;
+
+        isAttackHeld = false;
+        crosshair.SetCursorState(CursorState.Default);
     }
 
     private void OnDodge(InputAction.CallbackContext context)
@@ -147,5 +178,21 @@ public class InputHandler : MonoBehaviour, IUpdatable
             return;
 
         interactCommand.Execute();
+    }
+
+    private void OnNextSpell(InputAction.CallbackContext context)
+    {
+        if (ServiceLocator.Get<GameManager>().currentState.gameState != GameManager.GameState.Gameplay)
+            return;
+
+        nextCommand.Execute();
+    }
+
+    private void OnPreviousSpell(InputAction.CallbackContext context)
+    {
+        if (ServiceLocator.Get<GameManager>().currentState.gameState != GameManager.GameState.Gameplay)
+            return;
+
+        previousCommand.Execute();
     }
 }
