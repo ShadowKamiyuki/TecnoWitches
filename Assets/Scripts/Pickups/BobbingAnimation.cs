@@ -22,6 +22,9 @@ public class BobbingAnimation : MonoBehaviour, IUpdatable
         {
             updateManager.Unregister(this);
         }
+
+        if (pickup != null)
+            pickup.OnCollected -= StopBobbing;
     }
 
     private void Start()
@@ -30,14 +33,19 @@ public class BobbingAnimation : MonoBehaviour, IUpdatable
 
         // save the starting position of the game object
         initialPosition = transform.position;
+
+        if (pickup != null)
+            pickup.OnCollected += StopBobbing;
     }
 
     public void Tick(float deltaTime)
     {
-        if (pickup && !pickup.hasBeenCollected)
-        {
-            // sin function for smooth bobbing effect
-            transform.position = initialPosition + direction * Mathf.Sin(Time.time * frecuency) * magnitude;
-        }
+        // sin function for smooth bobbing effect
+        transform.position = initialPosition + direction * Mathf.Sin(Time.time * frecuency) * magnitude;
+    }
+
+    private void StopBobbing()
+    {
+        transform.position = initialPosition;
     }
 }

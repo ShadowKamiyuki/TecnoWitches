@@ -1,45 +1,30 @@
+using System;
 using UnityEngine;
 
-public class Pickup : MonoBehaviour, ICollectible, IUpdatable
+public abstract class Pickup : MonoBehaviour, IPickUpEffect
 {
-    public bool hasBeenCollected = false;
-    private Transform player;
+    protected bool hasBeenCollected = false;
 
-    private void OnEnable()
+    public event Action OnCollected;
+
+    public void Apply(GameObject collector)
     {
-        ServiceLocator.Get<CustomUpdateManager>().Register(this);
-    }
-
-    private void OnDisable()
-    {
-        CustomUpdateManager updateManager = ServiceLocator.Get<CustomUpdateManager>();
-
-        if (updateManager != null)
-        {
-            updateManager.Unregister(this);
-        }
-    }
-
-    public virtual void Collect()
-    {
-        if (hasBeenCollected) return;
+        if (hasBeenCollected)
+            return;
 
         hasBeenCollected = true;
+        OnCollected.Invoke();
+        Collect(collector);
 
-        Debug.Log("picked up");
-
-        // Por defecto destruimos la pickup
+        // sustitucion por pool a futuro
         Destroy(gameObject);
     }
 
-    public void Tick(float deltaTime)
+    protected abstract void Collect(GameObject collector);
+
+    private void OnTriggerEnter(Collider other)
     {
-        if (player != null)
-        {
-            if (Vector2.Distance(transform.position, player.position) < 0.1f)
-            {
-                Collect();
-            }
-        }
+        if (!other.CompareTag("Player")) return;
+        Apply(other.gameObject);
     }
 }
