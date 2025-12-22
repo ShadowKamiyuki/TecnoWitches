@@ -17,6 +17,7 @@ public class AudioManager : MonoBehaviourSingleton<AudioManager>
     protected override void OnAwaken()
     {
         Debug.Log("AudioManager inicializado");
+        ServiceLocator.Register<AudioManager>(this);
 
         musicDictionary = new Dictionary<string, AudioClip>();
 
@@ -31,6 +32,13 @@ public class AudioManager : MonoBehaviourSingleton<AudioManager>
         {
             sfxDictionary[clip.name] = clip;
         }
+    }
+
+    protected override void OnDestroyed()
+    {
+        ServiceLocator.Unregister<AudioManager>();
+
+        Debug.Log("AudioManager destruido");
     }
 
     public void PlayMusic(string clipName, bool loop = true)
