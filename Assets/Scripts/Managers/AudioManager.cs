@@ -49,7 +49,10 @@ public class AudioManager : MonoBehaviourSingleton<AudioManager>
         source.pitch = audioEvent.pitch;
 
         // asigna el grupo correcto
-        source.outputAudioMixerGroup = mixerGroups[audioEvent.channel];
+        if (mixerGroups.TryGetValue(audioEvent.channel, out AudioMixerGroup group))
+        {
+            source.outputAudioMixerGroup = group;
+        }
 
         source.Play();
 
