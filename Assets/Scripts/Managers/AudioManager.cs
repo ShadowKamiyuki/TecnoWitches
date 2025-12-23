@@ -15,6 +15,7 @@ public class AudioManager : MonoBehaviourSingleton<AudioManager>
 
     [Header("Prefabs")]
     [SerializeField] private GameObject sfxPrefab;
+    [SerializeField] private GameObject uiPrefab;
 
     [Header("Music Settings")]
     [SerializeField] private float musicCrossfadeTime = 2f;
@@ -24,12 +25,11 @@ public class AudioManager : MonoBehaviourSingleton<AudioManager>
 
     private Dictionary<AudioChannel, AudioMixerGroup> mixerGroups;
 
-    // music with crossfade
     private AudioSource musicSourceA;
     private AudioSource musicSourceB;
     private AudioSource activeMusicSource;
+
     private Coroutine musicFadeCoroutine;
-    private Coroutine fadeCoroutine;
 
     protected override void OnAwaken()
     {
@@ -47,18 +47,17 @@ public class AudioManager : MonoBehaviourSingleton<AudioManager>
         musicSourceB = CreateMusicSource("Music Source B");
 
         activeMusicSource = musicSourceA;
+        activeMusicSource.volume = 1f; // volumen inicial
     }
 
     protected override void OnDestroyed()
     {
         ServiceLocator.Unregister<AudioManager>();
-
         Debug.Log("AudioManager destruido");
     }
 
-    /// <summary>
-    /// Reproduce cualquier AudioEvent. Música/Loop/UI/SFX se manejan automáticamente.
-    /// </summary>
+    #region Public Methods
+
     public void PlayAudio(AudioEvent audioEvent, Vector3 position = default)
     {
         if (audioEvent == null || audioEvent.clip == null)
@@ -69,61 +68,97 @@ public class AudioManager : MonoBehaviourSingleton<AudioManager>
             case AudioChannel.Music:
                 PlayMusic(audioEvent);
                 break;
-
             case AudioChannel.SFX:
                 PlaySFX(audioEvent, position);
                 break;
-
             case AudioChannel.UI:
                 PlayUI(audioEvent);
                 break;
         }
     }
 
-    /// <summary>
-    /// Cambia el volumen de un exposed parameter (0-1)
-    /// </summary>
     public void SetVolume(string exposedParam, float volumeLinear)
     {
         float volumeDb = Mathf.Log10(Mathf.Clamp(volumeLinear, 0.0001f, 1f)) * 20f;
         mainMixer.SetFloat(exposedParam, volumeDb);
     }
 
-    /// <summary>
-    /// Baja suavemente la música a 0.
-    /// </summary>
     public void FadeOutMusic(System.Action onComplete = null)
     {
-        if (fadeCoroutine != null)
-            StopCoroutine(fadeCoroutine);
-
-        fadeCoroutine = StartCoroutine(FadeMusicCoroutine(0f, fadeDuration, onComplete));
+        StartFade(activeMusicSource, 0f, fadeDuration, onComplete);
     }
 
-    /// <summary>
-    /// Sube suavemente la música al volumen normal.
-    /// </summary>
     public void FadeInMusic(System.Action onComplete = null)
     {
-        if (fadeCoroutine != null)
-            StopCoroutine(fadeCoroutine);
-
-        fadeCoroutine = StartCoroutine(FadeMusicCoroutine(1f, fadeDuration, onComplete));
+        StartFade(activeMusicSource, 1f, fadeDuration, onComplete);
     }
 
-    private IEnumerator FadeMusicCoroutine(float targetVolume, float duration, System.Action onComplete)
+    #endregion
+
+    #region Music Methods
+
+    private void PlayMusic(AudioEvent musicEvent)
+    {
+        if (activeMusicSource.clip == musicEvent.clip)
+            return;
+
+        AudioSource nextSource = (activeMusicSource == musicSourceA) ? musicSourceB : musicSourceA;
+        nextSource.clip = musicEvent.clip;
+        nextSource.pitch = musicEvent.pitch;
+        nextSource.volume = 0f;
+        nextSource.loop = true;
+        nextSource.Play();
+
+        if (musicFadeCoroutine != null)
+            StopCoroutine(musicFadeCoroutine);
+
+        musicFadeCoroutine = StartCoroutine(CrossfadeMusic(activeMusicSource, nextSource, musicCrossfadeTime));
+        activeMusicSource = nextSource;
+    }
+
+    private IEnumerator CrossfadeMusic(AudioSource from, AudioSource to, float duration)
     {
         float t = 0f;
-
-        // Determinar la fuente activa
-        AudioSource source = activeMusicSource;
-        float startVolume = source.volume;
+        float fromStartVolume = from.volume;
+        float toTargetVolume = 1f;
 
         while (t < duration)
         {
             t += Time.deltaTime;
             float normalized = t / duration;
-            source.volume = Mathf.Lerp(startVolume, targetVolume, normalized);
+
+            // Fade exponencial (más natural)
+            from.volume = Mathf.Lerp(fromStartVolume, 0f, Mathf.Pow(normalized, 2));
+            to.volume = Mathf.Lerp(0f, toTargetVolume, Mathf.Pow(normalized, 2));
+
+            yield return null;
+        }
+
+        from.volume = 0f;
+        to.volume = toTargetVolume;
+
+        from.Stop();
+        from.clip = null;
+    }
+
+    private void StartFade(AudioSource source, float targetVolume, float duration, System.Action onComplete)
+    {
+        if (musicFadeCoroutine != null)
+            StopCoroutine(musicFadeCoroutine);
+
+        musicFadeCoroutine = StartCoroutine(FadeCoroutine(source, targetVolume, duration, onComplete));
+    }
+
+    private IEnumerator FadeCoroutine(AudioSource source, float targetVolume, float duration, System.Action onComplete)
+    {
+        float startVolume = source.volume;
+        float t = 0f;
+
+        while (t < duration)
+        {
+            t += Time.deltaTime;
+            float normalized = t / duration;
+            source.volume = Mathf.Lerp(startVolume, targetVolume, Mathf.Pow(normalized, 2));
             yield return null;
         }
 
@@ -140,52 +175,18 @@ public class AudioManager : MonoBehaviourSingleton<AudioManager>
         source.playOnAwake = false;
         source.loop = true;
         source.volume = 0f;
-        source.spatialBlend = 0f; // música siempre 2D
+        source.spatialBlend = 0f; // Música 2D
         source.outputAudioMixerGroup = musicGroup;
 
         return source;
     }
 
-    private void PlayMusic(AudioEvent musicEvent)
-    {
-        if (activeMusicSource.clip == musicEvent.clip)
-            return;
+    #endregion
 
-        AudioSource nextSource = activeMusicSource == musicSourceA ? musicSourceB : musicSourceA;
-        nextSource.clip = musicEvent.clip;
-        nextSource.pitch = musicEvent.pitch;
-        nextSource.volume = 0f;
-        nextSource.loop = true;
-        nextSource.Play();
-
-        if (musicFadeCoroutine != null)
-            StopCoroutine(musicFadeCoroutine);
-
-        musicFadeCoroutine = StartCoroutine(CrossfadeMusic(activeMusicSource, nextSource, musicCrossfadeTime));
-        activeMusicSource = nextSource;
-    }
-
-    private IEnumerator CrossfadeMusic(AudioSource from, AudioSource to, float time)
-    {
-        float t = 0f;
-        while (t < time)
-        {
-            t += Time.deltaTime;
-            float normalized = t / time;
-
-            from.volume = Mathf.Lerp(1f, 0f, normalized);
-            to.volume = Mathf.Lerp(0f, 1f, normalized);
-
-            yield return null;
-        }
-
-        from.Stop();
-        from.clip = null;
-    }
+    #region SFX & UI Methods
 
     private void PlaySFX(AudioEvent audioEvent, Vector3 position)
     {
-        // use service locator
         GameObject obj = PoolManager.Instance.Spawn(sfxPrefab, position, Quaternion.identity);
         AudioSource source = obj.GetComponent<AudioSource>();
 
@@ -201,6 +202,25 @@ public class AudioManager : MonoBehaviourSingleton<AudioManager>
             StartCoroutine(ReturnToPoolAfterPlay(obj, audioEvent.clip.length / audioEvent.pitch));
     }
 
+    private void PlayUI(AudioEvent audioEvent)
+    {
+        GameObject obj = PoolManager.Instance.Spawn(uiPrefab, Vector3.zero, Quaternion.identity);
+        obj.transform.parent = transform;
+
+        AudioSource source = obj.GetComponent<AudioSource>();
+        source.clip = audioEvent.clip;
+        source.volume = audioEvent.volume;
+        source.pitch = audioEvent.pitch;
+        source.loop = audioEvent.loop;
+        source.outputAudioMixerGroup = uiGroup;
+        source.spatialBlend = 0f; // UI 2D
+
+        source.Play();
+
+        if (!audioEvent.loop)
+            StartCoroutine(ReturnToPoolAfterPlay(obj, audioEvent.clip.length / audioEvent.pitch));
+    }
+
     private IEnumerator ReturnToPoolAfterPlay(GameObject obj, float delay)
     {
         yield return new WaitForSeconds(delay);
@@ -208,21 +228,5 @@ public class AudioManager : MonoBehaviourSingleton<AudioManager>
         poolable?.Despawn();
     }
 
-    private void PlayUI(AudioEvent audioEvent)
-    {
-        GameObject obj = new GameObject("UI Audio: " + audioEvent.clip.name);
-        obj.transform.parent = transform;
-
-        AudioSource source = obj.AddComponent<AudioSource>();
-        source.clip = audioEvent.clip;
-        source.volume = audioEvent.volume;
-        source.pitch = audioEvent.pitch;
-        source.loop = audioEvent.loop;
-        source.outputAudioMixerGroup = uiGroup;
-        source.spatialBlend = 0f; // UI siempre 2D
-        source.Play();
-
-        if (!audioEvent.loop)
-            Destroy(obj, audioEvent.clip.length / audioEvent.pitch);
-    }
+    #endregion
 }
