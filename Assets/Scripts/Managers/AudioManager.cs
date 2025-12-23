@@ -1,37 +1,30 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class AudioManager : MonoBehaviourSingleton<AudioManager>
 {
-    [Header("Audio Sources")]
-    [SerializeField] private AudioSource musicSource;
-    [SerializeField] private AudioSource sfxSource;
+    [Header("Mixer principal")]
+    [SerializeField] private AudioMixer mainMixer;
 
-    [Header("Clips")]
-    [SerializeField] private List<AudioClip> musicClips;
-    [SerializeField] private List<AudioClip> sfxClips;
+    [Header("Mixer Groups")]
+    [SerializeField] private AudioMixerGroup musicGroup;
+    [SerializeField] private AudioMixerGroup sfxGroup;
+    [SerializeField] private AudioMixerGroup uiGroup;
 
-    private Dictionary<string, AudioClip> musicDictionary;
-    private Dictionary<string, AudioClip> sfxDictionary;
+    private Dictionary<AudioChannel, AudioMixerGroup> mixerGroups;
 
     protected override void OnAwaken()
     {
         Debug.Log("AudioManager inicializado");
         ServiceLocator.Register<AudioManager>(this);
 
-        musicDictionary = new Dictionary<string, AudioClip>();
-
-        foreach (AudioClip clip in musicClips)
+        mixerGroups = new Dictionary<AudioChannel, AudioMixerGroup>
         {
-            musicDictionary[clip.name] = clip;
-        }
-
-        sfxDictionary = new Dictionary<string, AudioClip>();
-
-        foreach (var clip in sfxClips)
-        {
-            sfxDictionary[clip.name] = clip;
-        }
+            { AudioChannel.Music, musicGroup },
+            { AudioChannel.SFX, sfxGroup },
+            { AudioChannel.UI, uiGroup }
+        };
     }
 
     protected override void OnDestroyed()
@@ -41,39 +34,33 @@ public class AudioManager : MonoBehaviourSingleton<AudioManager>
         Debug.Log("AudioManager destruido");
     }
 
-    public void PlayMusic(string clipName, bool loop = true)
+    public void PlayAudio(AudioEvent audioEvent)
     {
-        if (musicDictionary.TryGetValue(clipName, out AudioClip clip))
-        {
-            musicSource.clip = clip;
-            musicSource.loop = loop;
-            musicSource.Play();
-        }
-        else
-        {
-            Debug.LogWarning($"{clipName} not found");
-        }
+        if (audioEvent == null || audioEvent.clip == null)
+            return;
+
+        GameObject obj = new GameObject("Audio: " + audioEvent.clip.name);
+        obj.transform.parent = transform;
+        AudioSource source = obj.AddComponent<AudioSource>();
+
+        source.clip = audioEvent.clip;
+        source.loop = audioEvent.loop;
+        source.volume = audioEvent.volume;
+        source.pitch = audioEvent.pitch;
+
+        // asigna el grupo correcto
+        source.outputAudioMixerGroup = mixerGroups[audioEvent.channel];
+
+        source.Play();
+
+        if (!audioEvent.loop)
+            Destroy(obj, audioEvent.clip.length / audioEvent.pitch);
     }
 
-    public void PlaySFX(string clipName)
+    public void SetVolume(string exposedParam, float volumeLinear)
     {
-        if (sfxDictionary.TryGetValue(clipName, out AudioClip clip))
-        {
-            sfxSource.PlayOneShot(clip);
-        }
-        else
-        {
-            Debug.LogWarning($"{clipName} not found");
-        }
-    }
-
-    public void SetMusicVolume(float volume)
-    {
-        musicSource.volume = volume;
-    }
-
-    public void SetSFXVolume(float volume)
-    {
-        sfxSource.volume = volume;
+        // convertir [0-1] a decibeles
+        float volumeDb = Mathf.Log10(Mathf.Clamp(volumeLinear, 0.0001f, 1f)) * 20f;
+        mainMixer.SetFloat(exposedParam, volumeDb);
     }
 }

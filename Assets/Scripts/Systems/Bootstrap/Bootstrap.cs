@@ -5,6 +5,7 @@ public class Bootstrap : MonoBehaviour
     [SerializeField] private GameObject gameManager;
     [SerializeField] private GameObject mainMenu;
     [SerializeField] private GameObject updateManager;
+    [SerializeField] private GameObject audioManager;
 
     private void Awake()
     {
@@ -13,6 +14,7 @@ public class Bootstrap : MonoBehaviour
         Instantiate(updateManager);
         Instantiate(gameManager);
         Instantiate(mainMenu);
+        Instantiate(audioManager);
 
         Debug.Log("=== Todos los servicios registrados ===");
     }
