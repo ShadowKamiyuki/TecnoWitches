@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b58dde56b6259be4cbf89fcce7a5a9b6, type: 3}
+  m_Name: AreaSpell
+  m_EditorClassIdentifier: 
+  icon: {fileID: 0}
+  label: AreaSpell
+  castTime: 0.1
+  cooldown: 0
+  effects:
+  - rid: 3363272475193376768
+  - rid: 3363272475193376770
+  references:
+    version: 2
+    RefIds:
+    - rid: 3363272475193376768
+      type: {class: DamageEffect, ns: , asm: Assembly-CSharp}
+      data:
+        damage: 10
+    - rid: 3363272475193376770
+      type: {class: AreaEffect, ns: , asm: Assembly-CSharp}
+      data:
+        radius: 3
