@@ -22,6 +22,11 @@ public class SpellCaster : MonoBehaviour, IUpdatable
 
     public event Action<SpellData> OnSpellChanged; // event to notify other systems (mainly UI)
 
+    // getters for debug
+    public RuntimeSpell CurrentSpell => currentSpell;
+    public Vector3 CursorPosition => isoCursor != null ? isoCursor.CursorPosition : Vector3.zero;
+    public Transform FirePoint => firePoint;
+
     private void Start()
     {
         // Crear instancias runtime
