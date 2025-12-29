@@ -187,6 +187,7 @@ public class AudioManager : MonoBehaviourSingleton<AudioManager>
 
     private void PlaySFX(AudioEvent audioEvent, Vector3 position)
     {
+        // change the instance to service locator getter
         GameObject obj = PoolManager.Instance.Spawn(sfxPrefab, position, Quaternion.identity);
         AudioSource source = obj.GetComponent<AudioSource>();
 
@@ -194,7 +195,9 @@ public class AudioManager : MonoBehaviourSingleton<AudioManager>
         source.volume = audioEvent.volume;
         source.pitch = audioEvent.pitch;
         source.loop = audioEvent.loop;
-        source.outputAudioMixerGroup = mixerGroups[audioEvent.channel];
+
+        if (mixerGroups.TryGetValue(audioEvent.channel, out var group))
+            source.outputAudioMixerGroup = group;
 
         source.Play();
 
