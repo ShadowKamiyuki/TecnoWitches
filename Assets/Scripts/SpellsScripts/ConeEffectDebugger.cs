@@ -23,7 +23,7 @@ public class ConeEffectDebugger : MonoBehaviour
             return;
 
         // Buscamos un ConeEffect en los efectos del spell actual
-        foreach (var effect in spellCaster.CurrentSpell.data.effects)
+        foreach (var effect in spellCaster.CurrentSpell.Data.effects)
         {
             if (effect is ConeEffect cone)
             {
