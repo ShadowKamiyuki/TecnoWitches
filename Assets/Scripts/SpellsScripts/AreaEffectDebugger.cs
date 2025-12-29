@@ -3,44 +3,72 @@ using UnityEngine;
 [ExecuteAlways]
 public class AreaEffectDebugger : MonoBehaviour
 {
+    [Header("Referencia")]
     public SpellCaster spellCaster;
 
-    public Color areaColor = new Color(0f, 0.8f, 1f, 0.25f);
+    [Header("Colores")]
+    public Color areaColor = new Color(0f, 0.8f, 1f, 0.35f);
     public Color hitColor = Color.red;
+    public Color centerColor = Color.white;
 
+    [Header("Opciones")]
     public bool showHits = true;
 
-    private void OnDrawGizmos()
+    private void OnDrawGizmosSelected()
     {
         if (spellCaster == null || spellCaster.CurrentSpell == null)
             return;
 
-        Vector3 center = spellCaster.CursorPosition;
+        SpellData data = spellCaster.CurrentSpell.Data;
+        if (data == null) return;
 
-        foreach (var effect in spellCaster.CurrentSpell.Data.effects)
+        Vector3 center = ResolveCenter();
+
+        foreach (var effect in data.effects)
         {
             if (effect is AreaEffect area)
             {
                 DrawArea(center, area.radius);
 
                 if (showHits)
-                    DrawHits(area, center);
+                    DrawHits(center, area.radius);
             }
         }
+    }
+
+    // ------------------------------------------------------
+
+    private Vector3 ResolveCenter()
+    {
+        // Runtime cursor
+        Vector3 cursorPos = spellCaster.CursorPosition;
+
+        if (cursorPos != Vector3.zero)
+            return cursorPos;
+
+        // Fallback: FirePoint o caster
+        if (spellCaster.FirePoint != null)
+            return spellCaster.FirePoint.position;
+
+        return spellCaster.transform.position;
     }
 
     private void DrawArea(Vector3 center, float radius)
     {
         Gizmos.color = areaColor;
         DrawWireCircle(center, radius, 32);
-        Gizmos.DrawWireSphere(center, 0.15f);
+
+        Gizmos.color = centerColor;
+        Gizmos.DrawSphere(center, 0.15f);
     }
 
-    private void DrawHits(AreaEffect area, Vector3 center)
+    private void DrawHits(Vector3 center, float radius)
     {
-        foreach (var hit in Physics.OverlapSphere(center, area.radius))
+        Collider[] hits = Physics.OverlapSphere(center, radius);
+
+        Gizmos.color = hitColor;
+        foreach (var hit in hits)
         {
-            Gizmos.color = hitColor;
             Gizmos.DrawSphere(hit.transform.position, 0.25f);
         }
     }
