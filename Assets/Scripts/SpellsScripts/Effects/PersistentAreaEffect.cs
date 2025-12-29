@@ -9,7 +9,7 @@ public class PersistentAreaEffect : SpellEffect
 
     public override void Execute(SpellContext ctx)
     {
-        GameObject area = GameObject.Instantiate(areaPrefab, ctx.target.transform.position, Quaternion.identity);
+        GameObject area = GameObject.Instantiate(areaPrefab, ctx.Target.transform.position, Quaternion.identity);
         GameObject.Destroy(area, duration);
     }
 }

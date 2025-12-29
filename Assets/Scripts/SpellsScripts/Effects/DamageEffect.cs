@@ -8,13 +8,13 @@ public class DamageEffect : SpellEffect
 
     public override void Execute(SpellContext ctx)
     {
-        if (ctx.target == null)
+        if (ctx.Target == null)
         {
             Debug.Log("No target for damage effect");
             return;
         }
 
-        Debug.Log($"DamageEffect: {damage} damage to {ctx.target.name}");
+        Debug.Log($"DamageEffect: {damage} damage to {ctx.Target.name}");
 
         // Ejemplo si tienes un componente de salud:
         // context.Target.GetComponent<Health>()?.TakeDamage(damage);

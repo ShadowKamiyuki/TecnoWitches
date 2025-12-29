@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b58dde56b6259be4cbf89fcce7a5a9b6, type: 3}
   m_Name: Fireball
   m_EditorClassIdentifier: 
+  contextType: 3
+  selfCast: 0
   icon: {fileID: 0}
   label: Fireball
   castTime: 0.24

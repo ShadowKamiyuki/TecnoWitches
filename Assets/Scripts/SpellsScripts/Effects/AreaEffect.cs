@@ -8,12 +8,17 @@ public class AreaEffect : SpellEffect
 
     public override void Execute(SpellContext ctx)
     {
-        Collider[] hits = Physics.OverlapSphere(ctx.target.transform.position, radius);
-
-        foreach (var hit in hits)
+        if (ctx is PositionSpellContext psCtx)
         {
-            // Aquí solo imprimimos, pero podrías aplicar daño real
-            Debug.Log("AOE hit: " + hit.name);
+            Collider[] hits = Physics.OverlapSphere(psCtx.TargetPoint, radius);
+
+            foreach (var hit in hits)
+            {
+                SpellContext targetCtx = new SpellContext(caster: psCtx.Caster, target: hit.gameObject);
+
+                // Aquí solo imprimimos, pero podrías aplicar daño real
+                Debug.Log("AOE hit: " + hit.name);
+            }
         }
     }
 }

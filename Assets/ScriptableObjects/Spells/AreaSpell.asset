@@ -12,10 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b58dde56b6259be4cbf89fcce7a5a9b6, type: 3}
   m_Name: AreaSpell
   m_EditorClassIdentifier: 
+  contextType: 1
+  selfCast: 0
   icon: {fileID: 0}
   label: AreaSpell
   castTime: 0.1
-  cooldown: 0
+  cooldown: 1
   effects:
   - rid: 3363272475193376768
   - rid: 3363272475193376770
@@ -29,4 +31,4 @@ MonoBehaviour:
     - rid: 3363272475193376770
       type: {class: AreaEffect, ns: , asm: Assembly-CSharp}
       data:
-        radius: 3
+        radius: 5
