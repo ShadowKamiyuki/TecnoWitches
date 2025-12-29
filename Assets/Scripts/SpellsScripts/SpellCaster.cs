@@ -16,9 +16,9 @@ public class SpellCaster : MonoBehaviour, IUpdatable
     [Header("Spells Available")]
     [SerializeField] private List<SpellData> availableSpellData; // the spells the player have
 
-    private List<RuntimeSpell> runtimeSpells;
+    private List<RuntimeSpell> runtimeSpells = new();
     private RuntimeSpell currentSpell; // selected spell
-    private int currentSpellIndex = 0; // index of the selected spell
+    private int currentSpellIndex; // index of the selected spell
 
     public event Action<SpellData> OnSpellChanged; // event to notify other systems (mainly UI)
 
@@ -30,7 +30,6 @@ public class SpellCaster : MonoBehaviour, IUpdatable
     private void Start()
     {
         // Crear instancias runtime
-        runtimeSpells = new List<RuntimeSpell>();
         foreach (var data in availableSpellData)
             runtimeSpells.Add(new RuntimeSpell(data));
 
@@ -40,13 +39,9 @@ public class SpellCaster : MonoBehaviour, IUpdatable
 
     public void Tick(float deltaTime)
     {
-        // we get the position of the cursor to set the direction to shoot to.
-        Vector3 direction = (isoCursor.CursorPosition - firePoint.position).normalized;
-
-        // Actualizar cooldowns y castTimers
-        foreach (var spell in runtimeSpells)
+        foreach (RuntimeSpell spell in runtimeSpells)
         {
-            spell.Tick(Time.deltaTime, new SpellContext(direction, firePoint, gameObject));
+            spell.Tick(deltaTime);
         }
     }
 
@@ -55,14 +50,37 @@ public class SpellCaster : MonoBehaviour, IUpdatable
         if (currentSpell == null || !currentSpell.CanCast)
             return;
 
-        currentSpell.StartCast();
+        SpellContext context = BuildContext(currentSpell.ContextType);
+        currentSpell.StartCast(context);
+    }
+
+    private SpellContext BuildContext(SpellContextType type)
+    {
+        Vector3 targetPoint = isoCursor.CursorPosition;
+        Vector3 direction = firePoint != null ? (targetPoint - firePoint.position).normalized : Vector3.zero;
+
+        return type switch
+        {
+            SpellContextType.Base => new SpellContext(gameObject),
+
+            SpellContextType.Position => new PositionSpellContext(gameObject, targetPoint),
+
+            SpellContextType.Directional => new DirectionalSpellContext(gameObject, targetPoint, direction),
+
+            SpellContextType.FirePoint => new FirePointSpellContext(gameObject, firePoint, targetPoint, direction),
+
+            _ => null
+        };
     }
 
     private void SetSpell(int index)
     {
+        if (index < 0 || index >= runtimeSpells.Count)
+            return;
+
         currentSpellIndex = index;
         currentSpell = runtimeSpells[index];
-        OnSpellChanged?.Invoke(currentSpell.data);
+        //OnSpellChanged?.Invoke(currentSpell.data);
     }
 
     public void SwitchSpell(int delta)
@@ -81,6 +99,7 @@ public class SpellCaster : MonoBehaviour, IUpdatable
 
         availableSpellData.Add(newData);
         runtimeSpells.Add(new RuntimeSpell(newData));
+        SetSpell(runtimeSpells.Count - 1);
     }
 
     private void OnEnable()

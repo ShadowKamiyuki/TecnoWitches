@@ -6,16 +6,12 @@ using UnityEngine;
 /// </summary>
 public class SpellContext
 {
-    public Vector3 direction { get; }
-    public Transform firePoint { get; }
-    public GameObject caster {  get; }
-    public GameObject target { get; }
+    public GameObject Caster { get; }
+    public GameObject Target { get; }
 
-    public SpellContext(Vector3 direction, Transform firePoint, GameObject caster, GameObject target = null)
+    public SpellContext(GameObject caster, GameObject target = null)
     {
-        this.direction = direction;
-        this.firePoint = firePoint;
-        this.caster = caster;
-        this.target = target;
+        Caster = caster;
+        Target = target;
     }
 }

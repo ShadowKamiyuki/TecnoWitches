@@ -2248,10 +2248,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcd1d7ff89559204f9ba6b703aebb47f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spellCaster: {fileID: 0}
+  spellCaster: {fileID: 671038011}
   areaColor: {r: 0, g: 0.8, b: 1, a: 0.25}
   hitColor: {r: 1, g: 0, b: 0, a: 1}
-  radiusColor: {r: 0, g: 1, b: 1, a: 1}
   showHits: 1
 --- !u!4 &728965171
 Transform:
