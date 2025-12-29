@@ -15,18 +15,20 @@ public class ProjectileEffect : SpellEffect
             return;
         }
 
-        GameObject proj = SpawnFromPool(projectilePrefab, ctx.caster.transform.position,
-        ctx.caster.transform.rotation);
-
-        Vector3 direction = new Vector3(ctx.direction.x, 0, ctx.direction.z).normalized;
-
-        if (!proj.TryGetComponent(out ProjectileBehaviour projectile))
+        if (ctx is FirePointSpellContext fpCtx)
         {
-            Debug.LogError("El proyectil no tiene ProjectileBehaviour");
-            return;
-        }
+            GameObject proj = SpawnFromPool(projectilePrefab, fpCtx.FirePoint.position, Quaternion.identity);
 
-        projectile.Launch(direction, speed);
+            Vector3 direction = new Vector3(fpCtx.Direction.x, 0, fpCtx.Direction.z).normalized;
+
+            if (!proj.TryGetComponent(out ProjectileBehaviour projectile))
+            {
+                Debug.LogError("El proyectil no tiene ProjectileBehaviour");
+                return;
+            }
+
+            projectile.Launch(direction, speed);
+        }
 
         Debug.Log("Lanzado proyectil");
     }

@@ -2,14 +2,19 @@ using System;
 using UnityEngine;
 
 /// <summary>
-/// This class now has runtime behaviour only.
+/// Runtime-only spell behavior.
+/// Handles casting state, cooldowns and execution timing.
 /// </summary>
 public class RuntimeSpell
 {
-    public SpellData data;
+    public SpellData Data { get; }
+    public SpellContextType ContextType => Data.contextType;
+
     private float cooldownTimer;    // Tiempo restante para poder castear de nuevo
     private float castTimer;        // Tiempo restante de casteo activo
-    private bool isCasting;         // Indica si el hechizo está siendo casteado
+    private bool isCasting;         // Indica si el hechizo esta siendo casteado
+
+    private SpellContext castContext; // contexto capturado al iniciar el cast
 
     public bool IsCasting => isCasting;
     public bool CanCast => !isCasting && cooldownTimer <= 0f; // permite castear si no se esta casteando otro y no hay cooldown activo
@@ -20,46 +25,60 @@ public class RuntimeSpell
 
     public RuntimeSpell(SpellData data)
     {
-        this.data = data;
-        cooldownTimer = 0f;
-        isCasting = false;
-        castTimer = 0f;
+        Data = data;
     }
 
     // Tick llamado desde SpellCaster.Update()
-    public void Tick(float dt, SpellContext ctx)
+    public void Tick(float dt)
     {
         if (cooldownTimer > 0)
             cooldownTimer = Mathf.Max(0, cooldownTimer - dt);
 
-        // Reducir tiempo de cast
-        if (isCasting)
-        {
-            castTimer -= dt;
-            if (castTimer <= 0f)
-            {
-                // Ejecutar efectos al terminar cast
-                foreach (var effect in data.effects)
-                    effect.Execute(ctx);
+        if (!isCasting)
+            return;
 
-                isCasting = false;
-                cooldownTimer = data.Cooldown;
-            }
-        }
+        castTimer -= dt;
+        if (castTimer > 0f)
+            return;
+
+        CompleteCast();
     }
 
-    public void StartCast()
+    public void StartCast(SpellContext ctx)
     {
-        if (!CanCast) return;
+        if (!CanCast)
+            return;
 
+        castContext = ctx;
+        castTimer = Data.CastTime;
         isCasting = true;
-        castTimer = data.CastTime;
+
+        OnCastStarted?.Invoke();
+
+        if (castTimer <= 0f)
+            CompleteCast();
+    }
+
+    private void CompleteCast()
+    {
+        foreach (var effect in Data.effects)
+            effect.Execute(castContext);
+
+        isCasting = false;
+        castContext = null;
+
+        cooldownTimer = Data.Cooldown;
+        OnCastCompleted?.Invoke();
+        OnCooldownStarted?.Invoke();
     }
 
     public void CancelCast()
     {
-        if (!isCasting) return;
+        if (!isCasting)
+            return;
+
         isCasting = false;
         castTimer = 0f;
+        castContext = null;
     }
 }

@@ -2114,6 +2114,8 @@ MonoBehaviour:
   firePoint: {fileID: 226474489}
   availableSpellData:
   - {fileID: 11400000, guid: 9b5c5acde91645c498dd0082c1c9b47f, type: 2}
+  - {fileID: 11400000, guid: 1602ea609ce5cee4a8769206a78f5449, type: 2}
+  - {fileID: 11400000, guid: 780c95f6ddd829741948be7ccb23d5dd, type: 2}
 --- !u!1 &703655555
 GameObject:
   m_ObjectHideFlags: 0
@@ -2217,6 +2219,54 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &728965169
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 728965171}
+  - component: {fileID: 728965170}
+  m_Layer: 0
+  m_Name: AreaGizmo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &728965170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 728965169}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcd1d7ff89559204f9ba6b703aebb47f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spellCaster: {fileID: 671038011}
+  areaColor: {r: 0, g: 0.8, b: 1, a: 0.25}
+  hitColor: {r: 1, g: 0, b: 0, a: 1}
+  showHits: 1
+--- !u!4 &728965171
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 728965169}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &753677619
 GameObject:
   m_ObjectHideFlags: 0
@@ -4115,6 +4165,55 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &1981218288
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1981218290}
+  - component: {fileID: 1981218289}
+  m_Layer: 0
+  m_Name: ConeGizmo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1981218289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1981218288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30cab5a775694b34583447f9b4dab3bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spellCaster: {fileID: 671038011}
+  coneColor: {r: 1, g: 0.6, b: 0, a: 0.6}
+  hitColor: {r: 1, g: 0, b: 0, a: 1}
+  radiusColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  showHits: 1
+--- !u!4 &1981218290
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1981218288}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.75, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2005293209
 GameObject:
   m_ObjectHideFlags: 0
@@ -4982,3 +5081,5 @@ SceneRoots:
   - {fileID: 1959594555}
   - {fileID: 220381182}
   - {fileID: 16823514}
+  - {fileID: 1981218290}
+  - {fileID: 728965171}

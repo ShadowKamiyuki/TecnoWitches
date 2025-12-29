@@ -172,6 +172,8 @@ MonoBehaviour:
     type: 3}
   updateManager: {fileID: 1341813522856259509, guid: 38c1ce4f19525594dadda7cf156f8334,
     type: 3}
+  audioManager: {fileID: 3460719974520523816, guid: b882a5173def61c438b758c2eddb105e,
+    type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

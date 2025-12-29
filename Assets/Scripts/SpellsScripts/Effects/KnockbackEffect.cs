@@ -8,16 +8,16 @@ public class KnockbackEffect : SpellEffect
 
     public override void Execute(SpellContext ctx)
     {
-        if (ctx.target == null)
+        if (ctx.Target == null)
             return;
 
-        Rigidbody rb = ctx.target.GetComponent<Rigidbody>();
+        Rigidbody rb = ctx.Target.GetComponent<Rigidbody>();
         if (rb != null)
         {
-            Vector3 dir = (ctx.target.transform.position - ctx.caster.transform.position).normalized;
+            Vector3 dir = (ctx.Target.transform.position - ctx.Caster.transform.position).normalized;
             rb.AddForce(dir * force, ForceMode.Impulse);
 
-            Debug.Log($"Knockback: pushed {ctx.target.name}");
+            Debug.Log($"Knockback: pushed {ctx.Target.name}");
         }
     }
 }
