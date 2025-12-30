@@ -3,9 +3,10 @@ using UnityEngine;
 public class Bootstrap : MonoBehaviour
 {
     [SerializeField] private GameObject gameManager;
-    [SerializeField] private GameObject mainMenu;
     [SerializeField] private GameObject updateManager;
     [SerializeField] private GameObject audioManager;
+    [SerializeField] private GameObject sceneLoader;
+    [SerializeField] private string initialScene = "UIMenu";
 
     private void Awake()
     {
@@ -13,8 +14,8 @@ public class Bootstrap : MonoBehaviour
 
         Instantiate(updateManager);
         Instantiate(gameManager);
-        Instantiate(mainMenu);
         Instantiate(audioManager);
+        Instantiate(sceneLoader);
 
         Debug.Log("=== Todos los servicios registrados ===");
     }
@@ -27,5 +28,11 @@ public class Bootstrap : MonoBehaviour
 
         if (gm != null)
             gm.Initialize();
+
+        ASyncLoader loader = ServiceLocator.Get<ASyncLoader>();
+        if (loader != null)
+        {
+            loader.LoadLevel(initialScene);
+        }
     }
 }

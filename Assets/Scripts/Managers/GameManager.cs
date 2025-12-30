@@ -9,7 +9,6 @@ public class GameManager : MonoBehaviourSingleton<GameManager>, IUpdatable
     {
         MainMenu,
         Gameplay,
-        LevelUp,
         Paused,
         GameOver
     }

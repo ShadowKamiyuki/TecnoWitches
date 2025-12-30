@@ -1,25 +1,34 @@
+using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class ASyncLoader : MonoBehaviour
 {
-    [Header("Menu Screen")]
-    [SerializeField] private GameObject loadingScreen;
-    [SerializeField] private GameObject[] menus;
+    private string currentLevelScene;
+    private bool isLoading;
 
-    [Header("Slider")]
-    [SerializeField] private Slider loadingSlider;
+    public bool IsLoading => isLoading;
 
-    public void LoadLevelBtn(string levelToLoad)
+    public event Action<float> OnProgress;
+    public event Action<bool> OnLoadingStateChanged;
+    public event Action OnFadeOutRequested;
+    public event Action OnFadeInRequested;
+
+    private void OnEnable()
     {
-        foreach (GameObject menu in menus)
-        {
-            menu.SetActive(false);
-        }
+        ServiceLocator.Register(this);
+    }
 
-        loadingScreen.SetActive(true);
+    private void OnDisable()
+    {
+        ServiceLocator.Unregister<ASyncLoader>();
+    }
+
+    public void LoadLevel(string levelToLoad)
+    {
+        if (isLoading)
+            return;
 
         // Run the ASync
         StartCoroutine(LoadLevelASync(levelToLoad));
@@ -27,18 +36,51 @@ public class ASyncLoader : MonoBehaviour
 
     IEnumerator LoadLevelASync(string levelToLoad)
     {
-        AsyncOperation loadOperation = SceneManager.LoadSceneAsync(levelToLoad);
+        isLoading = true;
+        OnLoadingStateChanged?.Invoke(true);
+        OnFadeOutRequested?.Invoke();
+        OnProgress?.Invoke(0f);
+
+        yield return null;
+
+        // unload scene
+        if (!string.IsNullOrEmpty(currentLevelScene))
+        {
+            AsyncOperation unloadOperation = SceneManager.UnloadSceneAsync(currentLevelScene);
+
+            while (!unloadOperation.isDone)
+            {
+                yield return null;
+            }
+        }
+
+        // load scene
+        AsyncOperation loadOperation = SceneManager.LoadSceneAsync(levelToLoad, LoadSceneMode.Additive);
+
+        loadOperation.allowSceneActivation = false;
+
+        while (loadOperation.progress < 0.9f)
+        {
+            float progress = Mathf.Clamp01(loadOperation.progress / 0.9f);
+            OnProgress?.Invoke(progress);
+            yield return null;
+        }
+
+        OnProgress?.Invoke(1f);
+        loadOperation.allowSceneActivation = true;
 
         while (!loadOperation.isDone)
         {
-            float progressValue = Mathf.Clamp01(loadOperation.progress / 0.9f);
-            loadingSlider.value = progressValue;
             yield return null;
         }
-    }
 
-    public void ExitGame()
-    {
-        Application.Quit();
+        currentLevelScene = levelToLoad;
+
+        Scene loadedScene = SceneManager.GetSceneByName(levelToLoad);
+        SceneManager.SetActiveScene(loadedScene);
+
+        OnLoadingStateChanged?.Invoke(true);
+        OnFadeInRequested?.Invoke();
+        isLoading = false;
     }
 }

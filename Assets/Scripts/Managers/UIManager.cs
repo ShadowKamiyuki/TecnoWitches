@@ -103,7 +103,7 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
 
     public void OnMainMenuButtonClicked()
     {
-        asyncLoader.LoadLevelBtn("Bootstrap Scene");
+        asyncLoader.LoadLevel("Bootstrap Scene");
         gameManager.SetGameState(GameManager.GameState.MainMenu);
         DestroySingleton();
     }
@@ -111,7 +111,7 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
     public void OnRestartButtonClicked()
     {
         DestroySingleton();
-        asyncLoader.LoadLevelBtn("GameScene");
+        asyncLoader.LoadLevel("GameScene");
         gameManager.SetGameState(GameManager.GameState.Gameplay);
         resultScreen.SetActive(false);
     }
