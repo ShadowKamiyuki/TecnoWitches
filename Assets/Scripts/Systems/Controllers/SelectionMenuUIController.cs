@@ -3,12 +3,17 @@ using UnityEngine;
 
 public class SelectionMenuUIController : MonoBehaviour
 {
-    [SerializeField] private CanvasGroup canvasGroup; // referencia al objeto raíz de la pantalla
+    [SerializeField] private CanvasGroup menuCanvasGroup; // referencia al objeto raíz de la pantalla
+    [SerializeField] private CanvasGroup confirmScreenCanvasGroup;
+
     private CharacterSelectState state;
 
     public void Initialize(CharacterSelectState state)
     {
         this.state = state;
+        confirmScreenCanvasGroup.alpha = 0f;
+        confirmScreenCanvasGroup.blocksRaycasts = false;
+        confirmScreenCanvasGroup.interactable = false;
     }
 
     // llamado por botones de cada personaje
@@ -19,7 +24,20 @@ public class SelectionMenuUIController : MonoBehaviour
 
     public void OnConfirmPressed()
     {
+        if (!state.HasSelection())
+            return;
+
+        ShowConfirmScreen();
+    }
+
+    public void OnConfirmYesPressed()
+    {
         state?.ConfirmSelection();
+    }
+
+    public void OnCancelSelectionPressed()
+    {
+        HideConfirmScreen();
     }
 
     public void OnBackPressed()
@@ -27,41 +45,55 @@ public class SelectionMenuUIController : MonoBehaviour
         state?.BackToMainMenu();
     }
 
+    private void ShowConfirmScreen()
+    {
+        confirmScreenCanvasGroup.alpha = 1f;
+        confirmScreenCanvasGroup.blocksRaycasts = true;
+        confirmScreenCanvasGroup.interactable = true;
+    }
+
+    private void HideConfirmScreen()
+    {
+        confirmScreenCanvasGroup.alpha = 0f;
+        confirmScreenCanvasGroup.blocksRaycasts = false;
+        confirmScreenCanvasGroup.interactable = false;
+    }
+
     // Fade in de la UI
     public IEnumerator FadeIn(float duration)
     {
-        canvasGroup.alpha = 0f;
-        canvasGroup.interactable = false;
-        canvasGroup.blocksRaycasts = false;
+        menuCanvasGroup.alpha = 0f;
+        menuCanvasGroup.interactable = false;
+        menuCanvasGroup.blocksRaycasts = false;
 
         float t = 0f;
         while (t < duration)
         {
             t += Time.unscaledDeltaTime;
-            canvasGroup.alpha = Mathf.Lerp(0f, 1f, t / duration);
+            menuCanvasGroup.alpha = Mathf.Lerp(0f, 1f, t / duration);
             yield return null;
         }
 
-        canvasGroup.alpha = 1f;
-        canvasGroup.interactable = true;
-        canvasGroup.blocksRaycasts = true;
+        menuCanvasGroup.alpha = 1f;
+        menuCanvasGroup.interactable = true;
+        menuCanvasGroup.blocksRaycasts = true;
     }
 
     // Fade out de la UI
     public IEnumerator FadeOut(float duration)
     {
-        canvasGroup.interactable = false;
-        canvasGroup.blocksRaycasts = false;
+        menuCanvasGroup.interactable = false;
+        menuCanvasGroup.blocksRaycasts = false;
 
         float t = 0f;
         while (t < duration)
         {
             t += Time.unscaledDeltaTime;
-            canvasGroup.alpha = Mathf.Lerp(1f, 0f, t / duration);
+            menuCanvasGroup.alpha = Mathf.Lerp(1f, 0f, t / duration);
             yield return null;
         }
 
-        canvasGroup.alpha = 0f;
+        menuCanvasGroup.alpha = 0f;
     }
 }
 

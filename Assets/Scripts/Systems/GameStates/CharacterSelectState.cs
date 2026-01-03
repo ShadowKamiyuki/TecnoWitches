@@ -55,6 +55,11 @@ public class CharacterSelectState : BaseState
         gameManager.LoadWithTransition(request);
     }
 
+    public bool HasSelection()
+    {
+        return currentSelectedCharacter != null;
+    }
+
     // El jugador vuelve al menú principal
     public void BackToMainMenu()
     {
