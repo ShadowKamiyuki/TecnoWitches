@@ -47,11 +47,11 @@ public class PlayerActions : MonoBehaviour
 
     private void Move()
     {
-        if (gm.isGameOver)
-        {
-            StopMovement();
-            return;
-        }
+        //if (gm.isGameOver)
+        //{
+        //    StopMovement();
+        //    return;
+        //}
 
         if (player == null)
         {

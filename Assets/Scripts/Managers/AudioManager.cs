@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 
-public class AudioManager : MonoBehaviourSingleton<AudioManager>
+public class AudioManager : PersistentService<AudioManager>
 {
     [Header("Main Mixer")]
     [SerializeField] private AudioMixer mainMixer;
@@ -31,10 +31,9 @@ public class AudioManager : MonoBehaviourSingleton<AudioManager>
 
     private Coroutine musicFadeCoroutine;
 
-    protected override void OnAwaken()
+    protected override void OnAwakeService()
     {
         Debug.Log("AudioManager inicializado");
-        ServiceLocator.Register<AudioManager>(this);
 
         mixerGroups = new Dictionary<AudioChannel, AudioMixerGroup>
         {
@@ -50,9 +49,8 @@ public class AudioManager : MonoBehaviourSingleton<AudioManager>
         activeMusicSource.volume = 1f; // volumen inicial
     }
 
-    protected override void OnDestroyed()
+    protected override void OnDestroyService()
     {
-        ServiceLocator.Unregister<AudioManager>();
         Debug.Log("AudioManager destruido");
     }
 
@@ -188,7 +186,7 @@ public class AudioManager : MonoBehaviourSingleton<AudioManager>
     private void PlaySFX(AudioEvent audioEvent, Vector3 position)
     {
         // change the instance to service locator getter
-        GameObject obj = PoolManager.Instance.Spawn(sfxPrefab, position, Quaternion.identity);
+        GameObject obj = Instantiate(sfxPrefab, position, Quaternion.identity);
         AudioSource source = obj.GetComponent<AudioSource>();
 
         source.clip = audioEvent.clip;
@@ -207,7 +205,7 @@ public class AudioManager : MonoBehaviourSingleton<AudioManager>
 
     private void PlayUI(AudioEvent audioEvent)
     {
-        GameObject obj = PoolManager.Instance.Spawn(uiPrefab, Vector3.zero, Quaternion.identity);
+        GameObject obj = Instantiate(uiPrefab, Vector3.zero, Quaternion.identity);
         obj.transform.parent = transform;
 
         AudioSource source = obj.GetComponent<AudioSource>();

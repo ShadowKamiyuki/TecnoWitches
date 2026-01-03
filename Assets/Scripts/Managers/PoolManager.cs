@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PoolManager : MonoBehaviourSingleton<PoolManager>
+public class PoolManager : PersistentService<PoolManager>
 {
     // Diccionario donde cada prefab tiene su propia cola de objetos disponibles.
     // key = prefab original
@@ -11,12 +11,12 @@ public class PoolManager : MonoBehaviourSingleton<PoolManager>
 
     [SerializeField] private Transform poolsRoot; // opcional
 
-    protected override void OnAwaken()
+    protected override void OnAwakeService()
     {
         ServiceLocator.Register<PoolManager>(this);
     }
 
-    private void OnDestroy()
+    protected override void OnDestroyService()
     {
         ServiceLocator.Unregister<PoolManager>();
     }

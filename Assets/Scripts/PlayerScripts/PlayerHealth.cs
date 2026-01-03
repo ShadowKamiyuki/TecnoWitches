@@ -103,9 +103,9 @@ public class PlayerHealth : MonoBehaviour, IUpdatable
 
     private void Kill()
     {
-        if (!gm.isGameOver)
-        {
-            gm.SetGameState(GameManager.GameState.GameOver);
-        }
+        //if (!gm.isGameOver)
+        //{
+        //    gm.SetGameState(GameManager.GameState.GameOver);
+        //}
     }
 }

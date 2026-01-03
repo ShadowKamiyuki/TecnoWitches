@@ -2,21 +2,22 @@ using UnityEngine;
 
 public class Bootstrap : MonoBehaviour
 {
+    [Header("Core Services")]
     [SerializeField] private GameObject gameManager;
-    [SerializeField] private GameObject mainMenu;
     [SerializeField] private GameObject updateManager;
     [SerializeField] private GameObject audioManager;
+    [SerializeField] private GameObject sceneLoader;
 
     private void Awake()
     {
         Debug.Log("=== Game Bootstrap iniciado ===");
 
-        Instantiate(updateManager);
-        Instantiate(gameManager);
-        Instantiate(mainMenu);
-        Instantiate(audioManager);
+        InstantiateIfNeeded<CustomUpdateManager>(updateManager);
+        InstantiateIfNeeded<GameManager>(gameManager);
+        InstantiateIfNeeded<AudioManager>(audioManager);
+        InstantiateIfNeeded<SceneLoaderService>(sceneLoader);
 
-        Debug.Log("=== Todos los servicios registrados ===");
+        Debug.Log("=== Managers creados ===");
     }
 
     private void Start()
@@ -24,8 +25,17 @@ public class Bootstrap : MonoBehaviour
         Debug.Log("cacheando servicios");
 
         GameManager gm = ServiceLocator.Get<GameManager>();
+        gm?.Initialize();
+    }
 
-        if (gm != null)
-            gm.Initialize();
+    private void InstantiateIfNeeded<T>(GameObject prefab)
+    {
+        if (prefab == null)
+            return;
+
+        if (ServiceLocator.Exists<T>())
+            return;
+
+        Instantiate(prefab);
     }
 }

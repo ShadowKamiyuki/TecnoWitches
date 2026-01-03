@@ -30,7 +30,7 @@ public class SwitchCommand : ICommand
         {
             _player.SwitchDimension();
             lastExecutionTime = Time.time;
-            UIManager.Instance.DisplaySwitchCooldown(cooldown);
+            //UIManager.Instance.DisplaySwitchCooldown(cooldown);
             Debug.Log("Dimensión cambiada con éxito!");
         }
     }

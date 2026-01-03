@@ -9,6 +9,19 @@ public static class ServiceLocator
     public static void Register<T>(T service)
     {
         var type = typeof(T);
+
+        if (service == null)
+        {
+            Debug.LogError($"[ServiceLocator] Intento de registrar servicio null: {type.Name}");
+            return;
+        }
+
+        if (_services.ContainsKey(type))
+        {
+            Debug.LogWarning($"[ServiceLocator] Servicio ya registrado: {type.Name}");
+            return;
+        }
+
         _services[type] = service;
         Debug.Log($"[ServiceLocator] Registrado: {type.Name}");
     }
@@ -30,4 +43,11 @@ public static class ServiceLocator
     }
 
     public static bool Exists<T>() => _services.ContainsKey(typeof(T));
+
+    // Opcional pero útil
+    public static void Clear()
+    {
+        _services.Clear();
+        Debug.Log("[ServiceLocator] Servicios limpiados");
+    }
 }

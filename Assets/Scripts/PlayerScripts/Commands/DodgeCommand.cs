@@ -15,7 +15,7 @@ public class DodgeCommand : ICommand
     {
         if (_player.TryDodge(cooldown))
         {
-            UIManager.Instance.DisplayDodgeCooldown(cooldown);
+            //UIManager.Instance.DisplayDodgeCooldown(cooldown);
         }
         else
         {

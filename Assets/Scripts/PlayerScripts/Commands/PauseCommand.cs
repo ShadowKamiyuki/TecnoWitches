@@ -4,13 +4,13 @@ public class PauseCommand : ICommand
     {
         GameManager gm = ServiceLocator.Get<GameManager>();
 
-        if (gm.currentState.gameState == GameManager.GameState.Gameplay)
-        {
-            gm.SetGameState(GameManager.GameState.Paused);
-        }
-        else if (gm.currentState.gameState == GameManager.GameState.Paused)
-        {
-            gm.SetGameState(GameManager.GameState.Gameplay);
-        }
+        //if (gm.CurrentState.gameState == GameManager.GameState.Gameplay)
+        //{
+        //    gm.SetGameState(GameManager.GameState.Paused);
+        //}
+        //else if (gm.CurrentState.gameState == GameManager.GameState.Paused)
+        //{
+        //    gm.SetGameState(GameManager.GameState.Gameplay);
+        //}
     }
 }

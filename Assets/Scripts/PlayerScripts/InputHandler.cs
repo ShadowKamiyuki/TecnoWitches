@@ -95,8 +95,8 @@ public class InputHandler : MonoBehaviour, IUpdatable
 
     public void Tick(float deltaTime)
     {
-        if (ServiceLocator.Get<GameManager>().currentState.gameState != GameManager.GameState.Gameplay)
-            return;
+        //if (ServiceLocator.Get<GameManager>().CurrentState.gameState != GameManager.GameState.Gameplay)
+        //    return;
 
         InputManagement();
         HandleAttackInput();
@@ -112,8 +112,8 @@ public class InputHandler : MonoBehaviour, IUpdatable
 
     private void InputManagement()
     {
-        if (ServiceLocator.Get<GameManager>().currentState.gameState != GameManager.GameState.Gameplay)
-            return;
+        //if (ServiceLocator.Get<GameManager>().CurrentState.gameState != GameManager.GameState.Gameplay)
+        //    return;
 
         moveDir = controls.Player.Move.ReadValue<Vector2>().normalized;
 
@@ -122,8 +122,8 @@ public class InputHandler : MonoBehaviour, IUpdatable
 
     private void OnAttackStarted(InputAction.CallbackContext context)
     {
-        if (ServiceLocator.Get<GameManager>().currentState.gameState != GameManager.GameState.Gameplay)
-            return;
+        //if (ServiceLocator.Get<GameManager>().CurrentState.gameState != GameManager.GameState.Gameplay)
+        //    return;
 
         isAttackHeld = true;
         crosshair.SetCursorState(CursorState.Clicked);
@@ -131,8 +131,8 @@ public class InputHandler : MonoBehaviour, IUpdatable
 
     private void OnAttackCanceled(InputAction.CallbackContext context)
     {
-        if (ServiceLocator.Get<GameManager>().currentState.gameState != GameManager.GameState.Gameplay)
-            return;
+        //if (ServiceLocator.Get<GameManager>().CurrentState.gameState != GameManager.GameState.Gameplay)
+        //    return;
 
         isAttackHeld = false;
         crosshair.SetCursorState(CursorState.Default);
@@ -140,58 +140,58 @@ public class InputHandler : MonoBehaviour, IUpdatable
 
     private void OnDodge(InputAction.CallbackContext context)
     {
-        if (ServiceLocator.Get<GameManager>().currentState.gameState != GameManager.GameState.Gameplay)
-            return;
+        //if (ServiceLocator.Get<GameManager>().CurrentState.gameState != GameManager.GameState.Gameplay)
+        //    return;
 
         dodgeCommand.Execute();
     }
 
     private void OnPause(InputAction.CallbackContext context)
     {
-        GameManager.GameState gameState = ServiceLocator.Get<GameManager>().currentState.gameState;
+        //GameManager.GameState gameState = ServiceLocator.Get<GameManager>().CurrentState.gameState;
 
-        if (gameState == GameManager.GameState.Gameplay || gameState == GameManager.GameState.Paused)
-        {
-            pauseCommand.Execute();
-        }
+        //if (gameState == GameManager.GameState.Gameplay || gameState == GameManager.GameState.Paused)
+        //{
+        //    pauseCommand.Execute();
+        //}
     }
 
     private void OnSpecialAttack(InputAction.CallbackContext context)
     {
-        if (ServiceLocator.Get<GameManager>().currentState.gameState != GameManager.GameState.Gameplay)
-            return;
+        //if (ServiceLocator.Get<GameManager>().CurrentState.gameState != GameManager.GameState.Gameplay)
+        //    return;
 
         specialAttackCommand.Execute();
     }
 
     private void OnDimensionSwitch(InputAction.CallbackContext context)
     {
-        if (ServiceLocator.Get<GameManager>().currentState.gameState != GameManager.GameState.Gameplay)
-            return;
+        //if (ServiceLocator.Get<GameManager>().CurrentState.gameState != GameManager.GameState.Gameplay)
+        //    return;
 
         switchDimensionCommand.Execute();
     }
 
     private void OnInteraction(InputAction.CallbackContext context)
     {
-        if (ServiceLocator.Get<GameManager>().currentState.gameState != GameManager.GameState.Gameplay)
-            return;
+        //if (ServiceLocator.Get<GameManager>().CurrentState.gameState != GameManager.GameState.Gameplay)
+        //    return;
 
         interactCommand.Execute();
     }
 
     private void OnNextSpell(InputAction.CallbackContext context)
     {
-        if (ServiceLocator.Get<GameManager>().currentState.gameState != GameManager.GameState.Gameplay)
-            return;
+        //if (ServiceLocator.Get<GameManager>().CurrentState.gameState != GameManager.GameState.Gameplay)
+        //    return;
 
         nextCommand.Execute();
     }
 
     private void OnPreviousSpell(InputAction.CallbackContext context)
     {
-        if (ServiceLocator.Get<GameManager>().currentState.gameState != GameManager.GameState.Gameplay)
-            return;
+        //if (ServiceLocator.Get<GameManager>().CurrentState.gameState != GameManager.GameState.Gameplay)
+        //    return;
 
         previousCommand.Execute();
     }

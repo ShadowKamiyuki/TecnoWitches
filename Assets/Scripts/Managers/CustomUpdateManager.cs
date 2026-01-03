@@ -1,20 +1,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CustomUpdateManager : MonoBehaviourSingleton<CustomUpdateManager>
+public class CustomUpdateManager : PersistentService<CustomUpdateManager>
 {
     // Lista de todas las clases que deben recibir el Tick()
     private List<IUpdatable> updatables = new List<IUpdatable>();
 
-    protected override void OnAwaken()
+    // ambos metodos de servicios pueden ser quitados si no tienen logica adicional
+    // se registran y desregistran desde persistentService.cs
+    protected override void OnAwakeService()
     {
-        ServiceLocator.Register<CustomUpdateManager>(this);
         Debug.Log("UpdateManager registrado");
     }
 
-    protected override void OnDestroyed()
+    protected override void OnDestroyService()
     {
-        ServiceLocator.Unregister<CustomUpdateManager>();
         Debug.Log("UpdateManager destruido");
     }
 

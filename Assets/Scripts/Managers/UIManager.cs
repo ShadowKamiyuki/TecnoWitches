@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class UIManager : MonoBehaviourSingleton<UIManager>
+public class UIManager : PersistentService<UIManager>
 {
     private Dictionary<Image, Coroutine> cooldownRoutines = new Dictionary<Image, Coroutine>();
 
@@ -23,18 +23,18 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
     public TextMeshProUGUI energyText;
 
     [Header("ASync Loader")]
-    [SerializeField] private ASyncLoader asyncLoader;
+    [SerializeField] private SceneLoaderService asyncLoader;
 
     private GameManager gameManager;
 
-    protected override void OnAwaken()
+    protected override void OnAwakeService()
     {
         ServiceLocator.Register<UIManager>(this);
         gameManager = ServiceLocator.Get<GameManager>();
         DisableScreens();
     }
 
-    private void OnDestroy()
+    protected override void OnDestroyService()
     {
         ServiceLocator.Unregister<UIManager>();
     }
@@ -47,7 +47,7 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
 
     public void DestroySingleton()
     {
-        Destroy(UIManager.Instance.gameObject);
+        
     }
 
     public void DisplayCooldown(Image cooldownImage, float cooldown, System.Action onFinish = null)
@@ -103,7 +103,7 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
 
     public void OnMainMenuButtonClicked()
     {
-        asyncLoader.LoadLevelBtn("Bootstrap Scene");
+        //asyncLoader.LoadLevelBtn("Bootstrap Scene");
         gameManager.SetGameState(GameManager.GameState.MainMenu);
         DestroySingleton();
     }
@@ -111,7 +111,7 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
     public void OnRestartButtonClicked()
     {
         DestroySingleton();
-        asyncLoader.LoadLevelBtn("GameScene");
+        //asyncLoader.LoadLevelBtn("GameScene");
         gameManager.SetGameState(GameManager.GameState.Gameplay);
         resultScreen.SetActive(false);
     }

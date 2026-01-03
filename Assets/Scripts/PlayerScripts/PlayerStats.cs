@@ -65,9 +65,9 @@ public class PlayerStats : MonoBehaviour
 
     #endregion
 
-    private void Start()
+    public void Initialize(CharacterData data)
     {
-        characterData = CharacterSelector.GetData();
+        characterData = data;
 
         if (characterData == null)
         {
@@ -77,8 +77,6 @@ public class PlayerStats : MonoBehaviour
 
         // assign the variables
         baseStats = actualStats = characterData.stats;
-
-        CharacterSelector.instance.DestroySingleton();
 
         // assign the variables
         CurrentHealth = characterData.stats.maxHealth;

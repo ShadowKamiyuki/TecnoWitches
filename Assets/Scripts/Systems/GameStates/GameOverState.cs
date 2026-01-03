@@ -1,31 +1,57 @@
 using UnityEngine;
 
-public class GameOverState : IState
+public class GameOverState : BaseState
 {
-    [HideInInspector] public string Name { get => "MainMenu State"; }
-    public GameManager.GameState gameState { get => GameManager.GameState.GameOver; }
+    private const string GAME_OVER_UI = "UI_GameOver";
+    private SceneLoaderService sceneLoader;
+    private GameOverUIController uiController;
 
-    private GameManager gameManager;
-
-    public GameOverState(GameManager gm)
+    public GameOverState(GameManager gameManager) : base(gameManager)
     {
-        gameManager = gm;
+        sceneLoader = ServiceLocator.Get<SceneLoaderService>();
     }
 
-    public void Enter()
+    public override void Enter()
     {
+        base.Enter();
         Time.timeScale = 0f;
-        UIManager.Instance.resultScreen.SetActive(true);
+
+        LoadGameOverUI();
     }
 
-    public void Exit()
+    public override void Exit()
     {
         Time.timeScale = 1f;
-        UIManager.Instance.resultScreen.SetActive(false);
+        base.Exit();
     }
 
-    public void Update()
+    private async void LoadGameOverUI()
     {
+        await sceneLoader.LoadSceneAsync(GAME_OVER_UI);
 
+        uiController = Object.FindFirstObjectByType<GameOverUIController>();
+        uiController?.Initialize(this);
+    }
+
+    public void Retry()
+    {
+        LoadingRequest request = new LoadingRequest(
+            load: new[] { "Game" },
+            unload: new[] { GAME_OVER_UI },
+            nextState: GameManager.GameState.Gameplay
+        );
+
+        gameManager.LoadWithTransition(request);
+    }
+
+    public void GoToMainMenu()
+    {
+        LoadingRequest request = new LoadingRequest(
+            load: new[] { "UI_MainMenu" },
+            unload: new[] { "Game", GAME_OVER_UI },
+            nextState: GameManager.GameState.MainMenu
+        );
+
+        gameManager.LoadWithTransition(request);
     }
 }

@@ -56,8 +56,8 @@ public class IsometricCrosshair : MonoBehaviour, IUpdatable
 
     public void Tick(float deltaTime)
     {
-        if (gm.currentState.gameState == GameManager.GameState.Gameplay)
-            UpdateCursorPosition();
+        //if (gm.CurrentState.gameState == GameManager.GameState.Gameplay)
+        //    UpdateCursorPosition();
     }
 
     private void UpdateCursorPosition()

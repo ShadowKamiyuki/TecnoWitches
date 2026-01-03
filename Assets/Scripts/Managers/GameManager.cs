@@ -1,84 +1,104 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MonoBehaviourSingleton<GameManager>, IUpdatable
+public class GameManager : PersistentService<GameManager>, IUpdatable
 {
-    private List<IState> states = new List<IState>();
-
     public enum GameState
     {
         MainMenu,
         Gameplay,
-        LevelUp,
         Paused,
-        GameOver
+        GameOver,
+        Loading,
+        CharacterSelect
     }
 
+    private Dictionary<GameState, IState> _states;
+    private LoadingRequest pendingRequest;
+
     // Store the current state of the game
-    public IState currentState;
+    public IState CurrentState { get; private set; }
 
-    // Flag to check if the game is over
-    public bool isGameOver = false;
+    public event Action<GameState> OnGameStateChanged;
 
-    protected override void OnAwaken()
+    protected override void OnAwakeService()
     {
         Debug.Log("GameManager inicializado");
 
-        // Resgistrar en el service locator
-        ServiceLocator.Register<GameManager>(this);
-
         // Registrar en el custom update manager
-        ServiceLocator.Get<CustomUpdateManager>().Register(this);
-
-        // Crear y registrar los estados
-        states.Add(new MainMenuState(this));
-        states.Add(new GameplayState(this));
-        states.Add(new PausedState(this));
-        states.Add(new GameOverState(this));
+        ServiceLocator.Get<CustomUpdateManager>()?.Register(this);
     }
 
-    protected override void OnDestroyed()
+    protected override void OnDestroyService()
     {
         CustomUpdateManager updateManager = ServiceLocator.Get<CustomUpdateManager>();
 
         if (updateManager != null)
-        {
             updateManager.Unregister(this);
-        }
-
-        ServiceLocator.Unregister<GameManager>();
 
         Debug.Log("GameManager destruido");
     }
 
     public void Initialize()
     {
+        CreateStates();
         SetGameState(GameState.MainMenu); // Establecer el estado inicial
     }
 
     public void Tick(float deltaTime)
     {
         // Delegamos el comportamiento del estado actual
-        currentState?.Update();
+        CurrentState?.Update(deltaTime);
     }
 
     // Define the method to change the state of the game
     public void SetGameState(GameState newState)
     {
+        if (CurrentState == _states[newState])
+            return;
+
         // Si hay un estado anterior, llamamos al Exit
-        currentState?.Exit();
+        CurrentState?.Exit();
 
-        // Establecemos el nuevo estado y llamamos al Enter
-        // En States BUSCA el state, EN DONDE el state.gameState sea igual a newState    
-        currentState = states.Find(state => state.gameState == newState);
-
-        if (currentState == null)
+        if (!_states.TryGetValue(newState, out IState nextState))
         {
             Debug.LogError("Estado no encontrado: " + newState);
             return;
         }
 
+        CurrentState = nextState;
         // Llamamos al método Enter del nuevo estado
-        currentState.Enter();
+        CurrentState.Enter();
+        OnGameStateChanged?.Invoke(newState);
+    }
+
+    public void CreateStates()
+    {
+        if (_states != null)
+            return;
+
+        _states = new Dictionary<GameState, IState>()
+        {
+            { GameState.MainMenu, new MainMenuState(this) },
+            { GameState.Gameplay, new GameplayState(this) },
+            { GameState.Paused, new PausedState(this) },
+            { GameState.GameOver, new GameOverState(this) },
+            { GameState.Loading, new LoadingState(this) },
+            { GameState.CharacterSelect, new CharacterSelectState(this) }
+        };
+    }
+
+    public void LoadWithTransition(LoadingRequest request)
+    {
+        pendingRequest = request;
+        SetGameState(GameState.Loading);
+    }
+
+    public LoadingRequest ConsumeLoadingRequest()
+    {
+        LoadingRequest request = pendingRequest;
+        pendingRequest = null;
+        return request;
     }
 }
