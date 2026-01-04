@@ -174,6 +174,10 @@ MonoBehaviour:
     type: 3}
   sceneLoader: {fileID: 3388123137619546599, guid: 66da54f1af78e3d42982a258503c13b6,
     type: 3}
+  levelController: {fileID: 7998054412771527438, guid: c54a5854dc2795449b51dc6807ff3107,
+    type: 3}
+  eventSystemPrefab: {fileID: 3804705772384049089, guid: 05c50607eb0489b49a726d08b077e255,
+    type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

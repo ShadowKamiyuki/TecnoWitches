@@ -18,12 +18,11 @@ public class SceneLoaderService : PersistentService<SceneLoaderService>
         IsLoading = true;
         Progress = 0f;
 
-        AsyncOperation operation =
-            SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+        AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
 
         while (!operation.isDone)
         {
-            Progress = operation.progress;
+            Progress = Mathf.Clamp01(operation.progress / 0.9f);
             await Task.Yield();
         }
 
@@ -49,7 +48,7 @@ public class SceneLoaderService : PersistentService<SceneLoaderService>
 
         while (!operation.isDone)
         {
-            Progress = operation.progress;
+            Progress = Mathf.Clamp01(operation.progress / 0.9f);
             await Task.Yield();
         }
 

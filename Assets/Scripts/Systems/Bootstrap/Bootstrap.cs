@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Bootstrap : MonoBehaviour
 {
@@ -7,6 +8,8 @@ public class Bootstrap : MonoBehaviour
     [SerializeField] private GameObject updateManager;
     [SerializeField] private GameObject audioManager;
     [SerializeField] private GameObject sceneLoader;
+    [SerializeField] private GameObject levelController;
+    [SerializeField] private GameObject eventSystemPrefab;
 
     private void Awake()
     {
@@ -16,6 +19,8 @@ public class Bootstrap : MonoBehaviour
         InstantiateIfNeeded<GameManager>(gameManager);
         InstantiateIfNeeded<AudioManager>(audioManager);
         InstantiateIfNeeded<SceneLoaderService>(sceneLoader);
+        InstantiateIfNeeded<LevelController>(levelController);
+        InstantiateIfNeeded<EventSystem>(eventSystemPrefab);
 
         Debug.Log("=== Managers creados ===");
     }
