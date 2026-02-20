@@ -28,7 +28,7 @@ public class SceneLoaderService : MonoBehaviour, ISceneLoader
         await Task.Yield();
 
         // Obtener FadeController desde Loading
-        LoadingView loadingView = Object.FindFirstObjectByType<LoadingView>();
+        LoadingView loadingView = FindFirstObjectByType<LoadingView>();
 
         if (loadingView != null)
             await loadingView.FadeInAsync();
@@ -49,27 +49,26 @@ public class SceneLoaderService : MonoBehaviour, ISceneLoader
 
         Progress = 1f;
 
-        // 4. Tiempo mínimo para evitar flash
+        if (loadingView != null)
+            loadingView.SetProgress(1f);
+
+        // 5. Garantizar tiempo minimo
         float elapsed = Time.unscaledTime - startTime;
+
         if (elapsed < MIN_LOADING_TIME)
         {
-            await Task.Delay(
-                Mathf.CeilToInt((MIN_LOADING_TIME - elapsed) * 1000f)
-            );
+            await Task.Delay(Mathf.CeilToInt((MIN_LOADING_TIME - elapsed) * 1000f));
         }
 
-        // 5. Fade out
+        // 6. Fade out
         if (loadingView != null)
             await loadingView.FadeOutAsync();
 
-        // 6. Descargar Loading
+        // 7. Descargar Loading
         AsyncOperation unloadingScreenOp = SceneManager.UnloadSceneAsync(LOADING_SCENE_NAME);
         await AwaitOperation(unloadingScreenOp, null);
 
         IsLoading = false;
-
-        // 7. Cambiar estado
-        ServiceLocator.Get<IAppStateMachine>().SetState(request.NextState);
     }
 
     private async Task AwaitOperation(AsyncOperation operation, LoadingView loadingView)

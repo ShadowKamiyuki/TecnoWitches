@@ -2,36 +2,41 @@ using UnityEngine;
 
 public class LoadingState : IAppState
 {
-    private readonly GameManager _gameManager;
     private readonly IAppStateMachine _stateMachine;
-    private readonly ISceneLoader _sceneLoader;
 
-    public LoadingState(GameManager gm)
+    public LoadingState(IAppStateMachine stateMachine)
     {
-        _gameManager = gm;
-        _sceneLoader = ServiceLocator.Get<ISceneLoader>();
-        _stateMachine = ServiceLocator.Get<IAppStateMachine>();
+        _stateMachine = stateMachine;
     }
 
     public async void Enter()
     {
-        LoadingRequest request = _gameManager.ConsumePendingRequest();
+        Debug.Log("Entered Loading State");
+
+        GameManager gameManager = _stateMachine as GameManager;
+        LoadingRequest request = gameManager?.ConsumePendingRequest();
 
         if (request == null)
         {
-            Debug.LogError("No hay LoadingRequest pendiente.");
+            Debug.LogError("No LoadingRequest found.");
             return;
         }
 
-        await _sceneLoader.ProcessRequest(request);
+        ISceneLoader sceneLoader = ServiceLocator.Get<ISceneLoader>();
 
-        // Cambiar estado después de completar carga
+        if (sceneLoader == null)
+        {
+            Debug.LogError("ISceneLoader not found.");
+            return;
+        }
+
+        await sceneLoader.ProcessRequest(request);
+
         _stateMachine.SetState(request.NextState);
     }
 
     public void Exit()
     {
-        Debug.Log("Saliendo de Loading");
-        // Ocultar pantalla de carga
+        Debug.Log("Exited Loading State");
     }
 }
