@@ -59,7 +59,7 @@ public class PlayerActions : MonoBehaviour
             return;
         }
 
-        rb.velocity = move3D * player.CurrentMoveSpeed; // the player moves with rigidbody
+        //rb.velocity = move3D * player.CurrentMoveSpeed; // the player moves with rigidbody
     }
 
     public void StopMovement()
@@ -127,7 +127,7 @@ public class PlayerActions : MonoBehaviour
     {
         if (currentInteractable != null)
         {
-            currentInteractable.Interact(this);
+            //currentInteractable.Interact(this);
             Debug.Log("Player interacted with: " + currentInteractable);
         }
     }

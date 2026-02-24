@@ -1,0 +1,16 @@
+{
+    "name": "TecnoWitches.Data",
+    "rootNamespace": "",
+    "references": [
+        "GUID:4f586f67280bc95478730014be732dc7"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

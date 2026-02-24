@@ -4,7 +4,7 @@ public class Chest : MonoBehaviour, IInteractable
 {
     private bool opened = false;
 
-    public void Interact(PlayerActions player)
+    public void Interact(PlayerInteraction player)
     {
         if (opened) return;
 

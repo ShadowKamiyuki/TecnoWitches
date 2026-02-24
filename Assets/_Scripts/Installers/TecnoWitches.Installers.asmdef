@@ -1,0 +1,19 @@
+{
+    "name": "TecnoWitches.Installers",
+    "rootNamespace": "",
+    "references": [
+        "GUID:4f586f67280bc95478730014be732dc7",
+        "GUID:0a61bdc2047623546b6db8771258d46f",
+        "GUID:3d7a02decb7a8334885712684fca8c8a",
+        "GUID:b4c30da1cde28b749a0520222f03ee4f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
