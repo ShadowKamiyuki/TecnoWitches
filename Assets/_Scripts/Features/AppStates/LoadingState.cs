@@ -10,7 +10,7 @@ public class LoadingState : IAppState
         _stateMachine = stateMachine;
     }
 
-    public async void Enter()
+    public async void Enter(object payload)
     {
         Debug.Log("Entered Loading State");
 
@@ -51,7 +51,7 @@ public class LoadingState : IAppState
         if (loadingView != null)
             await loadingView.FadeOutAsync();
 
-        _stateMachine.SetState(request.NextState);
+        _stateMachine.SetState(request.NextState, request.Payload);
     }
 
     public void Exit()

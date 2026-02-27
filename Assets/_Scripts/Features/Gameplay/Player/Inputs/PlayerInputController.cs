@@ -1,33 +1,43 @@
 using UnityEngine;
 
-public class PlayerInputController : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
-    private PlayerControls _controls;
-    private Player _player;
+    private IInputService _input;
+    private PlayerMovement _movement;
+    private PlayerCombat _combat;
+    private PlayerInteraction _interaction;
 
     private void Awake()
     {
-        _controls = new PlayerControls();
-        _player = GetComponent<Player>();
+        _input = ServiceLocator.Get<IInputService>();
+        _movement = GetComponent<PlayerMovement>();
+        _combat = GetComponent<PlayerCombat>();
+        _interaction = GetComponent<PlayerInteraction>();
     }
 
     private void OnEnable()
     {
-        _controls.Enable();
-
-        _controls.Player.Attack.performed += _ => _player.Attack();
-        _controls.Player.Dodge.performed += _ => _player.Dodge();
-        _controls.Player.Interact.performed += _ => _player.Interact();
+        _input.AttackStarted += OnAttackStarted;
+        _input.AttackCanceled += OnAttackCanceled;
+        _input.DodgePressed += OnDodge;
+        _input.InteractPressed += OnInteract;
     }
 
     private void OnDisable()
     {
-        _controls.Disable();
+        _input.AttackStarted -= OnAttackStarted;
+        _input.AttackCanceled -= OnAttackCanceled;
+        _input.DodgePressed -= OnDodge;
+        _input.InteractPressed -= OnInteract;
     }
 
     private void Update()
     {
-        Vector2 move = _controls.Player.Move.ReadValue<Vector2>();
-        _player.Move(move);
+        _movement.SetMoveDirection(_input.Movement);
     }
+
+    private void OnAttackStarted() => _combat.Attack();
+    private void OnAttackCanceled() { }
+    private void OnDodge() => _movement.TryDodge(0.5f);
+    private void OnInteract() => _interaction.Interact();
 }

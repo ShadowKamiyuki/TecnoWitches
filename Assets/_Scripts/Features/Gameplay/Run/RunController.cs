@@ -4,13 +4,30 @@ public class RunController : MonoBehaviour
 {
     [SerializeField] private CharacterDatabase characterDatabase;
     [SerializeField] private Transform spawnPoint;
+    [SerializeField] private CameraMovement playerCamera;
 
-    void Start()
+    [SerializeField] private GameObject player;
+
+    private IRunManager _runManager;
+
+    private void Awake()
     {
-        IRunManager runManager = ServiceLocator.Get<IRunManager>();
+        _runManager = ServiceLocator.Get<IRunManager>();
+        _runManager.OnRunStarted += HandleRunStarted;
+    }
+
+    private void OnDestroy()
+    {
+        if (_runManager != null)
+            _runManager.OnRunStarted -= HandleRunStarted;
+    }
+
+
+    void HandleRunStarted()
+    {
         IPlayerFactory playerFactory = ServiceLocator.Get<IPlayerFactory>();
 
-        string characterId = runManager.CurrentCharacterID;
+        string characterId = _runManager.CurrentCharacterID;
 
         CharacterData character = characterDatabase.GetById(characterId);
 
@@ -27,6 +44,9 @@ public class RunController : MonoBehaviour
             character.BaseStats.moveSpeed
         );
 
-        playerFactory.CreatePlayer(creationData, spawnPoint.position);
+        player = playerFactory.CreatePlayer(creationData, spawnPoint.position);
+
+        playerCamera.SetCameraTarget(player.transform);
+        playerCamera.gameObject.SetActive(true);
     }
 }

@@ -1,26 +1,16 @@
 using UnityEngine;
 
-public class CameraMovement : MonoBehaviour, IUpdatable
+public class CameraMovement : MonoBehaviour
 {
     [SerializeField] private Transform target;
     [SerializeField] private Vector3 offset;
 
-    private void Awake()
+    public void SetCameraTarget(Transform target)
     {
-        ServiceLocator.Get<CustomUpdateManager>().Register(this);
+        this.target = target;
     }
 
-    private void OnDestroy()
-    {
-        CustomUpdateManager updateManager = ServiceLocator.Get<CustomUpdateManager>();
-
-        if (updateManager != null)
-        {
-            updateManager.Unregister(this);
-        }
-    }
-
-    public void Tick(float deltaTime)
+    private void LateUpdate()
     {
         transform.position = target.position + offset;
     }

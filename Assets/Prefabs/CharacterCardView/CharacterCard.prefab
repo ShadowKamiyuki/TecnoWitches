@@ -262,6 +262,7 @@ MonoBehaviour:
   nameText: {fileID: 5112293503109833603}
   selectButton: {fileID: 6498217139491922350}
   lockedOverlay: {fileID: 6558256002039302854}
+  iconImage: {fileID: 6993216156008725778}
 --- !u!1 &5578552405266943790
 GameObject:
   m_ObjectHideFlags: 0

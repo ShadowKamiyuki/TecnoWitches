@@ -908,7 +908,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvasGroup: {fileID: 1665734706}
   characterButtons:
-  - {fileID: 0}
+  - {fileID: 202732685248729107}
+  database: {fileID: 11400000, guid: c3a168ad1659705409a9c9ef82609bc7, type: 2}
 --- !u!1 &708551730
 GameObject:
   m_ObjectHideFlags: 0
@@ -2209,10 +2210,30 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1726050314}
     m_Modifications:
+    - target: {fileID: 2293010045389848996, guid: 438a39676aad45d428f6843de66fc760,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3471696329524011601, guid: 438a39676aad45d428f6843de66fc760,
         type: 3}
       propertyPath: m_Name
       value: CharacterCard
+      objectReference: {fileID: 0}
+    - target: {fileID: 7866435215407244604, guid: 438a39676aad45d428f6843de66fc760,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 7866435215407244604, guid: 438a39676aad45d428f6843de66fc760,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 7866435215407244604, guid: 438a39676aad45d428f6843de66fc760,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 8763027535827862588, guid: 438a39676aad45d428f6843de66fc760,
         type: 3}
@@ -2319,6 +2340,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 438a39676aad45d428f6843de66fc760, type: 3}
+--- !u!114 &202732685248729107 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6486752777100017331, guid: 438a39676aad45d428f6843de66fc760,
+    type: 3}
+  m_PrefabInstance: {fileID: 202732685248729106}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3121dc8ad50597c48a294583e0990492, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

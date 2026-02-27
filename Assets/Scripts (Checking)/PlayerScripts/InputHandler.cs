@@ -53,34 +53,34 @@ public class InputHandler : MonoBehaviour, IUpdatable
 
     private void OnEnable()
     {
-        controls.Player.Enable();
+        //controls.Player.Enable();
 
-        // Suscribimos eventos
-        controls.Player.Attack.started += OnAttackStarted;
-        controls.Player.Attack.canceled += OnAttackCanceled;
-        controls.Player.Dodge.performed += OnDodge;
-        controls.Player.Pause.performed += OnPause;
-        controls.Player.SpecialAttack.performed += OnSpecialAttack;
-        controls.Player.SwitchDimension.performed += OnDimensionSwitch;
-        controls.Player.Interact.performed += OnInteraction;
-        controls.Player.Next.performed += OnNextSpell;
-        controls.Player.Previous.performed += OnPreviousSpell;
+        //// Suscribimos eventos
+        //controls.Player.Attack.started += OnAttackStarted;
+        //controls.Player.Attack.canceled += OnAttackCanceled;
+        //controls.Player.Dodge.performed += OnDodge;
+        //controls.Player.Pause.performed += OnPause;
+        //controls.Player.SpecialAttack.performed += OnSpecialAttack;
+        //controls.Player.SwitchDimension.performed += OnDimensionSwitch;
+        //controls.Player.Interact.performed += OnInteraction;
+        //controls.Player.Next.performed += OnNextSpell;
+        //controls.Player.Previous.performed += OnPreviousSpell;
     }
 
     private void OnDisable()
     {
         // Limpieza
-        controls.Player.Attack.started -= OnAttackStarted;
-        controls.Player.Attack.canceled -= OnAttackCanceled;
-        controls.Player.Dodge.performed -= OnDodge;
-        controls.Player.Pause.performed -= OnPause;
-        controls.Player.SpecialAttack.performed -= OnSpecialAttack;
-        controls.Player.SwitchDimension.performed -= OnDimensionSwitch;
-        controls.Player.Interact.performed -= OnInteraction;
-        controls.Player.Next.performed -= OnNextSpell;
-        controls.Player.Previous.performed -= OnPreviousSpell;
+        //controls.Player.Attack.started -= OnAttackStarted;
+        //controls.Player.Attack.canceled -= OnAttackCanceled;
+        //controls.Player.Dodge.performed -= OnDodge;
+        //controls.Player.Pause.performed -= OnPause;
+        //controls.Player.SpecialAttack.performed -= OnSpecialAttack;
+        //controls.Player.SwitchDimension.performed -= OnDimensionSwitch;
+        //controls.Player.Interact.performed -= OnInteraction;
+        //controls.Player.Next.performed -= OnNextSpell;
+        //controls.Player.Previous.performed -= OnPreviousSpell;
 
-        controls.Player.Disable();
+        //controls.Player.Disable();
     }
 
     private void OnDestroy()
@@ -115,7 +115,7 @@ public class InputHandler : MonoBehaviour, IUpdatable
         //if (ServiceLocator.Get<GameManager>().CurrentState.gameState != GameManager.GameState.Gameplay)
         //    return;
 
-        moveDir = controls.Player.Move.ReadValue<Vector2>().normalized;
+        moveDir = controls.Gameplay.Move.ReadValue<Vector2>().normalized;
 
         moveCommand.Execute();
     }

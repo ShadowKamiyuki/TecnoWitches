@@ -6,6 +6,6 @@ public class HealthPickup : Pickup
 
     protected override void Collect(GameObject collector)
     {
-        collector.GetComponent<PlayerHealth>()?.RestoreHealth(healthAmount);
+        collector.GetComponent<PlayerHealth>()?.Restore(healthAmount);
     }
 }

@@ -1,92 +1,85 @@
 using UnityEngine;
 
-public enum CursorState
-{
-    Default,
-    Clicked,
-}
-
 public class IsometricCrosshair : MonoBehaviour, IUpdatable
 {
-    [Header("Cursor Settings")]
-    [SerializeField] private Sprite[] cursorSprite;
+    [SerializeField] private Sprite[] cursorSprites;
     [SerializeField] private Camera mainCamera;
-    [SerializeField] private float floorHeightPhysical;
-    [SerializeField] private float floorHeightDigital;
+    [SerializeField] private float floorHeight = 0f;
 
-    // internal variables
-    private bool isDigital;
-    private PlayerControls controls;
-    private GameManager gm;
     private SpriteRenderer spriteRenderer;
+    private IAppStateMachine _stateMachine;
+    private IInputService input;
 
-    // properties
     public Vector3 CursorPosition => transform.position;
 
     private void Awake()
     {
-        controls = new PlayerControls();
         spriteRenderer = GetComponent<SpriteRenderer>();
-    }
-
-    private void Start()
-    {
-        spriteRenderer.sprite = cursorSprite[0];
     }
 
     private void OnEnable()
     {
-        controls.Player.Enable();
-        //ServiceLocator.Get<CustomUpdateManager>().Register(this);
-        gm = ServiceLocator.Get<GameManager>();
+        _stateMachine = ServiceLocator.Get<IAppStateMachine>();
+        input = ServiceLocator.Get<IInputService>();
 
-        //DimensionalSwitch.OnDimensionChanged += UpdateDimension;
+        input.AttackStarted += HandleAttackStarted;
+        input.AttackCanceled += HandleAttackCanceled;
+
+        ServiceLocator.Get<IUpdateService>()?.Register(this);
     }
 
     private void OnDisable()
     {
-        controls.Player.Disable();
-        //CustomUpdateManager updateManager = ServiceLocator.Get<CustomUpdateManager>();
+        if (input != null)
+        {
+            input.AttackStarted -= HandleAttackStarted;
+            input.AttackCanceled -= HandleAttackCanceled;
+        }
 
-        //if (updateManager != null)
-        //    updateManager.Unregister(this);
-
-        //DimensionalSwitch.OnDimensionChanged -= UpdateDimension;
+        ServiceLocator.Get<IUpdateService>()?.Unregister(this);
     }
 
     public void Tick(float deltaTime)
     {
-        //if (gm.CurrentState.gameState == GameManager.GameState.Gameplay)
-        //    UpdateCursorPosition();
+        if (_stateMachine.CurrentState != AppState.Gameplay)
+            return;
+
+        UpdateCursorPosition();
     }
 
     private void UpdateCursorPosition()
     {
-        float targetY = isDigital ? floorHeightDigital : floorHeightPhysical;
-
-        // reads the position of the mouse from the input system and creates a ray to the floor
-        Vector2 mousePos = controls.Player.Point.ReadValue<Vector2>();
+        Vector2 mousePos = input.MousePosition;
         Ray ray = mainCamera.ScreenPointToRay(mousePos);
 
-        // creates an horizontal plane
-        Plane isometricPlane = new Plane(Vector3.up, new Vector3(0, targetY, 0));
+        Plane plane = new Plane(Vector3.up, new Vector3(0, floorHeight, 0));
 
-        if (isometricPlane.Raycast(ray, out float dist))
+        if (plane.Raycast(ray, out float distance))
         {
-            Vector3 hitPoint = ray.GetPoint(dist);
-            hitPoint.y = targetY; // where the floor is
-
+            Vector3 hitPoint = ray.GetPoint(distance);
+            hitPoint.y = floorHeight;
             transform.position = hitPoint;
         }
     }
 
-    private void UpdateDimension(bool isDigital)
+    private void HandleAttackStarted()
     {
-        this.isDigital = isDigital;
+        if (_stateMachine.CurrentState != AppState.Gameplay)
+            return;
+
+        SetCursorState(CursorState.Clicked);
+    }
+
+    private void HandleAttackCanceled()
+    {
+        if (_stateMachine.CurrentState != AppState.Gameplay)
+            return;
+
+        SetCursorState(CursorState.Default);
     }
 
     public void SetCursorState(CursorState state)
     {
-        spriteRenderer.sprite = cursorSprite[(int)state];
+        spriteRenderer.sprite = cursorSprites[(int)state];
     }
 }

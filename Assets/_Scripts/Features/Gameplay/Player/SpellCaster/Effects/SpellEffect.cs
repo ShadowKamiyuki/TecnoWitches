@@ -8,6 +8,7 @@ public abstract class SpellEffect
 
     protected GameObject SpawnFromPool(GameObject prefab, Vector3 pos, Quaternion rot)
     {
-        return ServiceLocator.Get<PoolManager>().Spawn(prefab, pos, rot);
+        return null;
+        //return ServiceLocator.Get<PoolManager>().Spawn(prefab, pos, rot);
     }
 }

@@ -4,6 +4,7 @@ public class PlayerCombat : MonoBehaviour
 {
     private SpellCaster _spellCaster;
     private PlayerEnergy _energy;
+    private PlayerStatsRuntime _stats;
 
     private void Awake()
     {
@@ -11,13 +12,19 @@ public class PlayerCombat : MonoBehaviour
         _energy = GetComponent<PlayerEnergy>();
     }
 
+    public void InjectStats(PlayerStatsRuntime stats)
+    {
+        _stats = stats;
+    }
+
     public void Attack()
     {
-        _spellCaster.CastSpell();
+        float damage = _stats.Damage.Value;
+        //_spellCaster.CastSpell();
     }
 
     public void SpecialAttack()
     {
-        _energy.UseEnergy(100f);
+        _energy.Use(100f);
     }
 }

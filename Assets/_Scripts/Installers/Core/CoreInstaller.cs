@@ -1,4 +1,3 @@
-using Codice.Client.BaseCommands.BranchExplorer;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,11 +18,16 @@ public class CoreInstaller : MonoBehaviour
         RegisterService<IAppStateMachine>(gameManager);
         RegisterService<ISceneLoader>(sceneLoaderService);
 
-        IRunManager runManager = new RunManager();
+        ISeedGenerator seedGenerator = new UnitySeedGenerator();
+        IRunManager runManager = new RunManager(seedGenerator);
         ISaveService saveService = new SaveService();
+        IInputService inputService = new UnityInputService();
+        IPlayerFactory playerFactory = new PlayerFactory();
 
         ServiceLocator.RegisterGlobal(runManager);
         ServiceLocator.RegisterGlobal(saveService);
+        ServiceLocator.RegisterGlobal(inputService);
+        ServiceLocator.RegisterGlobal(playerFactory);
 
         Debug.Log("=== Servicios globales registrados ===");
 

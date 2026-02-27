@@ -775,7 +775,7 @@ MonoBehaviour:
   moveDir: {x: 0, y: 0}
   switchCooldown: 2
   dodgeCooldown: 1
-  crosshair: {fileID: 977193438}
+  crosshair: {fileID: 0}
 --- !u!54 &2063872719
 Rigidbody:
   m_ObjectHideFlags: 0

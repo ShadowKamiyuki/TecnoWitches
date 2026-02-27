@@ -5,7 +5,7 @@ public class SaveSelectState : IAppState
     private SaveSelectPresenter _presenter;
     private SaveSelectView _view;
 
-    public void Enter()
+    public void Enter(object payload)
     {
         _view = Object.FindFirstObjectByType<SaveSelectView>();
 

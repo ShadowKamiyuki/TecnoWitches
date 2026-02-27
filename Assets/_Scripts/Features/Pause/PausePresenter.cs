@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class PausePresenter
 {
     private readonly PauseView _view;
@@ -16,8 +14,6 @@ public class PausePresenter
         _view.Show();
         _view.OnResume += Resume;
         _view.OnQuit += QuitToMenu;
-
-        Time.timeScale = 0f;
     }
 
     public void Dispose()
@@ -25,8 +21,6 @@ public class PausePresenter
         _view.OnResume -= Resume;
         _view.OnQuit -= QuitToMenu;
         _view.Hide();
-
-        Time.timeScale = 1f;
     }
 
     private void Resume()

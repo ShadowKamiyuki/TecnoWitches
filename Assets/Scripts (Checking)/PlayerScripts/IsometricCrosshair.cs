@@ -1,11 +1,6 @@
 using UnityEngine;
 
-public enum CursorState
-{
-    Default,
-    Clicked,
-}
-
+[System.Obsolete]
 public class IsometricCrosshair : MonoBehaviour, IUpdatable
 {
     [Header("Cursor Settings")]
@@ -25,31 +20,31 @@ public class IsometricCrosshair : MonoBehaviour, IUpdatable
 
     private void Awake()
     {
-        controls = new PlayerControls();
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        //controls = new PlayerControls();
+        //spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     private void Start()
     {
-        spriteRenderer.sprite = cursorSprite[0];
+        //spriteRenderer.sprite = cursorSprite[0];
     }
 
     private void OnEnable()
     {
-        controls.Player.Enable();
-        ServiceLocator.Get<CustomUpdateManager>().Register(this);
-        gm = ServiceLocator.Get<GameManager>();
+        controls.Gameplay.Enable();
+        //ServiceLocator.Get<CustomUpdateManager>().Register(this);
+        //gm = ServiceLocator.Get<GameManager>();
 
         DimensionalSwitch.OnDimensionChanged += UpdateDimension;
     }
 
     private void OnDisable()
     {
-        controls.Player.Disable();
-        CustomUpdateManager updateManager = ServiceLocator.Get<CustomUpdateManager>();
+        controls.Gameplay.Disable();
+        //CustomUpdateManager updateManager = ServiceLocator.Get<CustomUpdateManager>();
 
-        if (updateManager != null)
-            updateManager.Unregister(this);
+        //if (updateManager != null)
+        //    updateManager.Unregister(this);
 
         DimensionalSwitch.OnDimensionChanged -= UpdateDimension;
     }
@@ -65,7 +60,7 @@ public class IsometricCrosshair : MonoBehaviour, IUpdatable
         float targetY = isDigital ? floorHeightDigital : floorHeightPhysical;
 
         // reads the position of the mouse from the input system and creates a ray to the floor
-        Vector2 mousePos = controls.Player.Point.ReadValue<Vector2>();
+        Vector2 mousePos = controls.Gameplay.Point.ReadValue<Vector2>();
         Ray ray = mainCamera.ScreenPointToRay(mousePos);
 
         // creates an horizontal plane

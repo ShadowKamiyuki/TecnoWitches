@@ -190,6 +190,54 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 02154ec8f7fb8864c92a638d5682ebde, type: 3}
+--- !u!1 &1422104108
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1422104109}
+  - component: {fileID: 1422104110}
+  m_Layer: 0
+  m_Name: RunController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1422104109
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1422104108}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1422104110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1422104108}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42979ee3075d3e74bb947d7b63ceb390, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterDatabase: {fileID: 11400000, guid: c3a168ad1659705409a9c9ef82609bc7, type: 2}
+  spawnPoint: {fileID: 1629567648}
+  playerCamera: {fileID: 1738656137}
+  player: {fileID: 2089367509075492028, guid: ef8ccf812fa55384fb8b0e0bd00efd6e, type: 3}
 --- !u!1 &1629567647
 GameObject:
   m_ObjectHideFlags: 0
@@ -302,6 +350,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Main Camera
       objectReference: {fileID: 0}
+    - target: {fileID: 2355787550477771680, guid: 005a14aa87e336c4dae4aec9c4c8351d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8331748974225817692, guid: 005a14aa87e336c4dae4aec9c4c8351d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -362,6 +415,24 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 005a14aa87e336c4dae4aec9c4c8351d, type: 3}
+--- !u!20 &1738656136 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 5038568046744957711, guid: 005a14aa87e336c4dae4aec9c4c8351d,
+    type: 3}
+  m_PrefabInstance: {fileID: 1738656135}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1738656137 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8630865272067588531, guid: 005a14aa87e336c4dae4aec9c4c8351d,
+    type: 3}
+  m_PrefabInstance: {fileID: 1738656135}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3f3231634930c84ab973df7395816bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1795731908
 GameObject:
   m_ObjectHideFlags: 0
@@ -372,7 +443,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1795731911}
   - component: {fileID: 1795731910}
-  - component: {fileID: 1795731909}
+  - component: {fileID: 1795731912}
   m_Layer: 3
   m_Name: IsometricCrosshair
   m_TagString: Untagged
@@ -380,24 +451,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1795731909
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1795731908}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d027a9ed0d674a14ebc6960165da0218, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cursorSprite:
-  - {fileID: 21300000, guid: 30fdd518948e8ba4b9ff547f762f5f8c, type: 3}
-  - {fileID: 21300000, guid: e1d53fddf3d11f847a3be31767e67a0a, type: 3}
-  mainCamera: {fileID: 0}
-  floorHeightPhysical: 0.515
-  floorHeightDigital: 10.515
 --- !u!212 &1795731910
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -465,12 +518,75 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!114 &1795731912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1795731908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d027a9ed0d674a14ebc6960165da0218, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cursorSprites:
+  - {fileID: 21300000, guid: 30fdd518948e8ba4b9ff547f762f5f8c, type: 3}
+  - {fileID: 21300000, guid: e1d53fddf3d11f847a3be31767e67a0a, type: 3}
+  mainCamera: {fileID: 1738656136}
+  floorHeight: 0
+--- !u!1 &2049323464
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2049323465}
+  - component: {fileID: 2049323466}
+  m_Layer: 0
+  m_Name: RunFlowController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2049323465
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2049323464}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 20, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2049323466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2049323464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf35a33d97bd7a048a11a7f1fea49c49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1725761315}
   - {fileID: 911219203}
+  - {fileID: 1422104109}
+  - {fileID: 2049323465}
+  - {fileID: 1629567648}
   - {fileID: 1738656135}
   - {fileID: 1795731911}
-  - {fileID: 1629567648}

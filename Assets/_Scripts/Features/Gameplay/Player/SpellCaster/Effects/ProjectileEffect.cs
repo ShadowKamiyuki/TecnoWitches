@@ -21,13 +21,13 @@ public class ProjectileEffect : SpellEffect
 
             Vector3 direction = new Vector3(fpCtx.Direction.x, 0, fpCtx.Direction.z).normalized;
 
-            if (!proj.TryGetComponent(out ProjectileBehaviour projectile))
-            {
-                Debug.LogError("El proyectil no tiene ProjectileBehaviour");
-                return;
-            }
+            //if (!proj.TryGetComponent(out ProjectileBehaviour projectile))
+            //{
+            //    Debug.LogError("El proyectil no tiene ProjectileBehaviour");
+            //    return;
+            //}
 
-            projectile.Launch(direction, speed);
+            //projectile.Launch(direction, speed);
         }
 
         Debug.Log("Lanzado proyectil");

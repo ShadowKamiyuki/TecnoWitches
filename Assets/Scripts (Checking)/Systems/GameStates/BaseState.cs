@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public abstract class BaseState : IState
+public abstract class BaseState
 {
     protected readonly GameManager gameManager;
 

@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour, IAppStateMachine
 {
     private Dictionary<AppState, IAppState> _states;
     private IAppState _currentState;
+    private IInputService _input;
     private LoadingRequest _pendingRequest;
 
     public AppState CurrentState { get; private set; }
@@ -15,6 +16,7 @@ public class GameManager : MonoBehaviour, IAppStateMachine
     private void Awake()
     {
         IRunManager runManager = ServiceLocator.Get<IRunManager>();
+        _input = ServiceLocator.Get<IInputService>();
     }
 
     private void Start()
@@ -27,8 +29,15 @@ public class GameManager : MonoBehaviour, IAppStateMachine
         );
     }
 
+    private void OnEnable()
+    {
+        _input.PausePressed += HandlePause;
+    }
+
     private void OnDestroy()
     {
+        _input.PausePressed -= HandlePause;
+
         if (ServiceLocator.Exists<IAppStateMachine>())
             ServiceLocator.UnregisterGlobal<IAppStateMachine>();
     }
@@ -38,7 +47,7 @@ public class GameManager : MonoBehaviour, IAppStateMachine
         _states = states;
     }
 
-    public void SetState(AppState newState)
+    public void SetState(AppState newState, object payload = null)
     {
         if (CurrentState == newState)
             return;
@@ -56,7 +65,7 @@ public class GameManager : MonoBehaviour, IAppStateMachine
 
         Debug.Log($"[StateMachine] AppState -> {newState}");
 
-        _currentState.Enter();
+        _currentState.Enter(payload);
         OnStateChanged?.Invoke(newState);
     }
 
@@ -72,5 +81,14 @@ public class GameManager : MonoBehaviour, IAppStateMachine
         LoadingRequest request = _pendingRequest;
         _pendingRequest = null;
         return request;
+    }
+
+    // control for pause
+    private void HandlePause()
+    {
+        if (CurrentState == AppState.Gameplay)
+            SetState(AppState.Paused);
+        else if (CurrentState == AppState.Paused)
+            SetState(AppState.Gameplay);
     }
 }

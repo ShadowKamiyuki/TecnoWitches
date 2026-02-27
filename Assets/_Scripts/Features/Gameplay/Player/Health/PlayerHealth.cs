@@ -1,111 +1,67 @@
 using UnityEngine;
+using System;
 
-public class PlayerHealth : MonoBehaviour, IUpdatable
+public class PlayerHealth : MonoBehaviour
 {
-    private PlayerStats playerStats;
-    private GameManager gm;
-    //private UIManager uiManager;
+    private PlayerStatsRuntime _stats;
 
-    [Header("Damage particle effect")]
-    //[SerializeField] private ParticleSystem damageEffect;
+    public float CurrentHealth { get; private set; }
 
-    // I-Frames
     [Header("I-Frames")]
     [SerializeField] private float invincibilityDuration = 0.5f;
-    private float invincibilityTimer;
-    private bool isInvincible;
+    private float _invincibilityTimer;
+    private bool _isInvincible;
 
-    private void Awake()
+    public event Action<float, float> OnHealthChanged;
+    public event Action OnDeath;
+
+    public void Initialize(PlayerStatsRuntime stats)
     {
-        //ServiceLocator.Get<CustomUpdateManager>().Register(this);
+        _stats = stats;
+        CurrentHealth = _stats.MaxHealth.Value;
     }
 
-    private void Start()
+    private void Update()
     {
-        gm = ServiceLocator.Get<GameManager>();
-        //uiManager = ServiceLocator.Get<UIManager>();
-
-        playerStats = GetComponent<PlayerStats>();
-
-        //uiManager.healthText.text = $"{playerStats.CurrentHealth} / {playerStats.CharacterData.stats.maxHealth}";
+        HandleInvincibility();
     }
 
-    private void OnDestroy()
+    private void HandleInvincibility()
     {
-        //CustomUpdateManager updateManager = ServiceLocator.Get<CustomUpdateManager>();
+        if (!_isInvincible) return;
 
-        //if (updateManager != null)
-        //{
-        //    updateManager.Unregister(this);
-        //}
+        _invincibilityTimer -= Time.deltaTime;
+
+        if (_invincibilityTimer <= 0f)
+            _isInvincible = false;
     }
 
-    public void Tick(float deltaTime)
+    public void TakeDamage(float amount)
     {
-        BecomeInvincible();
+        if (_isInvincible) return;
+
+        CurrentHealth -= amount;
+        CurrentHealth = Mathf.Max(CurrentHealth, 0f);
+
+        ActivateInvincibility(invincibilityDuration);
+
+        OnHealthChanged?.Invoke(CurrentHealth, _stats.MaxHealth.Value);
+
+        if (CurrentHealth <= 0f)
+            OnDeath?.Invoke();
     }
 
-    private void BecomeInvincible()
+    public void Restore(float amount)
     {
-        if (invincibilityTimer > 0)
-        {
-            invincibilityTimer -= Time.deltaTime;
-        }
-        else if (isInvincible)
-        {
-            isInvincible = false;
-        }
+        CurrentHealth += amount;
+        CurrentHealth = Mathf.Min(CurrentHealth, _stats.MaxHealth.Value);
+
+        OnHealthChanged?.Invoke(CurrentHealth, _stats.MaxHealth.Value);
     }
 
-    public void ActivateInvincibility(float duration)
+    private void ActivateInvincibility(float duration)
     {
-        isInvincible = true;
-        invincibilityTimer = duration;
-    }
-
-    public void TakeDamage(float dmg)
-    {
-        if (isInvincible)
-            return;
-
-        //if (playerStats)
-        //    playerStats.CurrentHealth -= dmg;
-
-        // add the call to particle effect (not instantiate -> pool)
-        invincibilityTimer = invincibilityDuration;
-        isInvincible = true;
-
-        //if (playerStats.CurrentHealth <= 0)
-        //{
-        //    playerStats.CurrentHealth = 0;
-        //    Kill();
-        //}
-
-        UpdateHealthBar();
-    }
-
-    public void RestoreHealth(float amount)
-    {
-        //float maxHealth = playerStats.CharacterData.stats.maxHealth;
-        //playerStats.CurrentHealth = Mathf.Min(playerStats.CurrentHealth + amount, maxHealth);
-        UpdateHealthBar();
-    }
-
-    private void UpdateHealthBar()
-    {
-        //if (uiManager == null || uiManager.healthBar == null)
-            return;
-
-        //float maxHealth = playerStats.CharacterData.stats.maxHealth;
-        //uiManager.healthBar.fillAmount = playerStats.CurrentHealth / maxHealth;
-        //uiManager.healthText.text = $"{playerStats.CurrentHealth} / {playerStats.CharacterData.stats.maxHealth}";
-    }
-
-    private void Kill()
-    {
-        //if (!gm.isGameOver)
-        //{
-        //    gm.SetGameState(GameManager.GameState.GameOver);
-        //}
+        _isInvincible = true;
+        _invincibilityTimer = duration;
     }
 }

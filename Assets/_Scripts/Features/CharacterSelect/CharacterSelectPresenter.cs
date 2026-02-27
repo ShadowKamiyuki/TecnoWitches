@@ -59,15 +59,18 @@ public class CharacterSelectPresenter
 
     private void OnCharacterSelected(CharacterData character)
     {
+        Debug.Log($"Selected character ID: '{character.Id}'");
+
         IRunManager runManager = ServiceLocator.Get<IRunManager>();
 
-        int seed = Random.Range(0, int.MaxValue);
-        runManager.StartRun(seed, character.Id);
+        RunStartRequest runStartData = new RunStartRequest(character.Id);
+        Debug.Log($"DTO created with ID: '{runStartData.CharacterID}'");
 
         LoadingRequest request = new LoadingRequest(
             load: new[] { "Game" },
             unload: new[] { "CharacterSelect" },
-            nextState: AppState.Gameplay
+            nextState: AppState.Gameplay,
+            payload: runStartData
         );
 
         _stateMachine.RequestSceneChange(request);

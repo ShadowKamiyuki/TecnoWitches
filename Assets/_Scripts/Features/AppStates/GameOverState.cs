@@ -5,7 +5,7 @@ public class GameOverState : IAppState
     private GameOverPresenter _presenter;
     private GameOverView _view;
 
-    public void Enter()
+    public void Enter(object payload)
     {
         _view = Object.FindFirstObjectByType<GameOverView>();
 

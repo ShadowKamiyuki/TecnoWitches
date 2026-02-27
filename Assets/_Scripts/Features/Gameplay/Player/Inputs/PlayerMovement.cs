@@ -7,7 +7,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float dashDuration = 0.15f;
 
     private Rigidbody _rb;
-    private PlayerStats _stats;
+    private PlayerStatsRuntime _stats;
 
     private Vector3 _moveDirection;
     private bool _isDashing;
@@ -17,13 +17,17 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>();
-        _stats = GetComponent<PlayerStats>();
     }
 
     private void FixedUpdate()
     {
         HandleDash();
         HandleMovement();
+    }
+
+    public void InjectStats(PlayerStatsRuntime stats)
+    {
+        _stats = stats;
     }
 
     public void SetMoveDirection(Vector2 direction)
@@ -33,9 +37,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleMovement()
     {
-        if (_isDashing) return;
+        if (_isDashing)
+            return;
 
-        _rb.velocity = _moveDirection * _stats.Speed;
+        _rb.velocity = _moveDirection * _stats.Speed.Value;
     }
 
     public bool TryDodge(float cooldown)

@@ -2,20 +2,36 @@
 
 public class Player : MonoBehaviour
 {
+    private PlayerStatsRuntime _stats;
+
     private PlayerMovement _movement;
     private PlayerCombat _combat;
     private PlayerInteraction _interaction;
+
+    private PlayerHealth _health;
+    private PlayerEnergy _energy;
 
     private void Awake()
     {
         _movement = GetComponent<PlayerMovement>();
         _combat = GetComponent<PlayerCombat>();
         _interaction = GetComponent<PlayerInteraction>();
+        _health = GetComponent<PlayerHealth>();
+        _energy = GetComponent<PlayerEnergy>();
     }
 
-    public void Initialize(PlayerStats stats)
+    public void Initialize(PlayerCreationData stats)
     {
+        _stats = new PlayerStatsRuntime(
+           stats.MaxHealth,
+           stats.Damage,
+           stats.MoveSpeed
+        );
 
+        _movement.InjectStats(_stats);
+        _combat.InjectStats(_stats);
+        _health.Initialize(_stats);
+        _energy.Initialize(_stats);
     }
 
     public void Move(Vector2 direction)

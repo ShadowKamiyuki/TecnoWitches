@@ -5,7 +5,7 @@ public class CharacterSelectState : IAppState
     private CharacterSelectPresenter _presenter;
     private CharacterSelectView _view;
 
-    public void Enter()
+    public void Enter(object payload)
     {
         _view = Object.FindFirstObjectByType<CharacterSelectView>();
 

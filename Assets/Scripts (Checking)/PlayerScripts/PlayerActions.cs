@@ -95,7 +95,7 @@ public class PlayerActions : MonoBehaviour
         dashTimer = dashDuration;
         dashCooldownTimer = Time.time + cooldown;
 
-        GetComponent<PlayerHealth>()?.ActivateInvincibility(dashDuration);
+        //GetComponent<PlayerHealth>()?.ac(dashDuration);
 
         Debug.Log("Player dodged!");
         return true;
@@ -109,7 +109,7 @@ public class PlayerActions : MonoBehaviour
 
     public void SpecialAttack()
     {
-        playerEnergy.UseEnergy(100f);
+        //playerEnergy.UseEnergy(100f);
         Debug.Log("Special attack!");
     }
 

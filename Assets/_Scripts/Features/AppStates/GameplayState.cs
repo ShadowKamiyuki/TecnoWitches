@@ -1,3 +1,6 @@
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
 public class GameplayState : IAppState
 {
     private readonly IRunManager _runManager;
@@ -7,15 +10,25 @@ public class GameplayState : IAppState
         _runManager = runManager;
     }
 
-    public void Enter()
+    public void Enter(object payload)
     {
-        // La run ya debería estar iniciada
-        if (!_runManager.IsRunActive)
+        Time.timeScale = 1f;
+
+        Debug.Log($"GameplayState payload type: {payload?.GetType()}");
+
+        // Si viene desde CharacterSelect -> iniciar run
+        if (payload is RunStartRequest request)
         {
-            UnityEngine.Debug.LogError("Entered GameplayState without active run.");
+            Debug.Log($"GameplayState received ID: '{request.CharacterID}'");
+            _runManager.StartRun(request.CharacterID);
+            return;
         }
 
-        UnityEngine.Time.timeScale = 1f;
+        // Si no hay payload, simplemente estamos volviendo (ej: desde Pause)
+        if (!_runManager.IsRunActive)
+        {
+            Debug.LogError("GameplayState entered without active run.");
+        }
     }
 
     public void Exit() { }

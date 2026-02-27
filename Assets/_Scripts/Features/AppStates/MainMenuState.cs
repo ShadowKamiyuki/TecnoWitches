@@ -7,7 +7,7 @@ public class MainMenuState : IAppState
 
     public MainMenuState() { }
 
-    public void Enter()
+    public void Enter(object payload)
     {
         _view = Object.FindFirstObjectByType<MainMenuView>();
 

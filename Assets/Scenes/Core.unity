@@ -583,6 +583,11 @@ PrefabInstance:
       propertyPath: sceneLoaderService
       value: 
       objectReference: {fileID: 1712560064}
+    - target: {fileID: 8150968178588800243, guid: c70896ca9cb3bbf4386d3291411e92ad,
+        type: 3}
+      propertyPath: customUpdateManager
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

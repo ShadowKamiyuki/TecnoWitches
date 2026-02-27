@@ -12,15 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94ba50d6d98461e4d893435808d41eed, type: 3}
   m_Name: Character Test
   m_EditorClassIdentifier: 
-  icon: {fileID: 0}
-  name: 
-  stats:
-    maxHealth: 1000
-    maxEnergy: 100
-    energyRecovery: 1
+  id: Sabrina_Adelainne
+  icon: {fileID: 21300000, guid: 754c8c6907840b548a2fc62fab1b2be7, type: 3}
+  displayName: Sabrina Adelainne
+  unlockedByDefault: 1
+  characterPrefab: {fileID: 2089367509075492028, guid: ef8ccf812fa55384fb8b0e0bd00efd6e,
+    type: 3}
+  startingAbilities: []
+  baseStats:
+    maxHealth: 100
     moveSpeed: 10
-    critRate: 1
-    critDamage: 1
-    might: 1
-    projectileSpeed: 1
-    magnet: 30
+    damage: 10
