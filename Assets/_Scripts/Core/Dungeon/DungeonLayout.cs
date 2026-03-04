@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Obsolete]
 public class DungeonLayout
 {
     private Dictionary<Vector2Int, RoomNode> _occupied = new();

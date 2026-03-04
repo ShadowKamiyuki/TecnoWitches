@@ -567,6 +567,8 @@ MonoBehaviour:
     type: 3}
   bossRoomPrefab: {fileID: 4931203397406804899, guid: de1ce1bdf14443b48988e5702d9837a3,
     type: 3}
+  corridorPrefab: {fileID: 4440273957357579509, guid: 83dfa0f03f7f31c4e8e50a593fd93b98,
+    type: 3}
   roomSpacing: 25
 --- !u!1001 &1725761315
 PrefabInstance:

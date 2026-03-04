@@ -8,6 +8,7 @@ public class DungeonService : MonoBehaviour, IDungeonService
     [SerializeField] private GameObject normalRoomPrefab;
     [SerializeField] private GameObject startRoomPrefab;
     [SerializeField] private GameObject bossRoomPrefab;
+    [SerializeField] private GameObject corridorPrefab;
 
     [Header("Settings")]
     [SerializeField] private float roomSpacing = 25f;
@@ -89,6 +90,53 @@ public class DungeonService : MonoBehaviour, IDungeonService
                     view.OpenDoor(DoorDirection.South);
             }
         }
+
+        BuildCorridors();
+    }
+
+    private void BuildCorridors()
+    {
+        var processed = new HashSet<(RoomNode, RoomNode)>();
+
+        foreach (var node in CurrentGraph.Nodes)
+        {
+            foreach (var neighbor in node.Connections)
+            {
+                if (processed.Contains((neighbor, node)))
+                    continue;
+
+                Vector3 posA = GetWorldPosition(node);
+                Vector3 posB = GetWorldPosition(neighbor);
+
+                Vector2Int delta = neighbor.GridPosition - node.GridPosition;
+
+                Vector3 direction = new Vector3(
+                    Mathf.Sign(delta.x),
+                    0,
+                    Mathf.Sign(delta.y)
+                );
+
+                Vector3 corridorPosition = posA + direction * (roomSpacing * 0.5f);
+
+                Quaternion rotation = Quaternion.identity;
+
+                if (Mathf.Abs(delta.x) > 0)
+                    rotation = Quaternion.Euler(0, 90, 0);
+
+                Instantiate(corridorPrefab, corridorPosition, rotation);
+
+                processed.Add((node, neighbor));
+            }
+        }
+    }
+
+    private Vector3 GetWorldPosition(RoomNode node)
+    {
+        return new Vector3(
+            node.GridPosition.x * roomSpacing,
+            0f,
+            node.GridPosition.y * roomSpacing
+        );
     }
 
     private GameObject GetPrefabForRoom(RoomType type)
