@@ -37,16 +37,22 @@ public class RunManager : IRunManager
     {
         _currentRun = null;
         OnRunEnded?.Invoke();
+        ServiceLocator.Get<IAppStateMachine>()?.SetState(AppState.GameOver);
     }
 
     public void RestartRun(int seed, string characterID)
     {
         EndRun();
-        StartRun(characterID);
+
+        _currentRun = new RunData(seed, characterID);
+        OnRunStarted?.Invoke();
     }
 
     public void AdvanceFloor()
     {
+        if (!IsRunActive)
+            return;
+
         _currentRun?.AdvanceFloor();
         OnFloorChanged?.Invoke(CurrentFloor);
     }

@@ -1,24 +1,52 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class RunFlowController : MonoBehaviour
 {
     private IRunManager _runManager;
+    private IDungeonService _dungeonService;
+
+    [SerializeField] private DungeonGenerationConfig config;
+    [SerializeField] private TransitionService transitionService;
+    [SerializeField] private RunController runController;
 
     private void Awake()
     {
         _runManager = ServiceLocator.Get<IRunManager>();
-        _runManager.OnRunStarted += LoadLobby;
-        _runManager.OnFloorChanged += LoadDungeon;
+
+        _runManager.OnRunStarted += HandleRunStarted;
+        _runManager.OnFloorChanged += HandleFloorChanged;
     }
 
-    private void LoadLobby()
+#if UNITY_EDITOR
+    [SerializeField] private bool generateOnStart = true;
+#endif
+
+    private void Start()
     {
-        SceneManager.LoadScene("Lobby", LoadSceneMode.Additive);
+        _dungeonService = ServiceLocator.Get<IDungeonService>();
+
+#if UNITY_EDITOR
+        if (generateOnStart)
+        {
+            _dungeonService.Generate(config);
+            runController.MovePlayerTo(_dungeonService.PlayerSpawn);
+        }
+#endif
     }
 
-    private void LoadDungeon(int floor)
+    private void HandleRunStarted()
     {
-        SceneManager.LoadScene("DungeonScene", LoadSceneMode.Additive);
+        _dungeonService.Generate(config);
+        runController.MovePlayerTo(_dungeonService.PlayerSpawn);
+    }
+
+    private async void HandleFloorChanged(int floor)
+    {
+        await transitionService.FadeIn();
+
+        _dungeonService.Generate(config);
+        runController.MovePlayerTo(_dungeonService.PlayerSpawn);
+
+        await transitionService.FadeOut();
     }
 }

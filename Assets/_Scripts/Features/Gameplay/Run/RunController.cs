@@ -19,7 +19,10 @@ public class RunController : MonoBehaviour
     private void OnDestroy()
     {
         if (_runManager != null)
+        {
             _runManager.OnRunStarted -= HandleRunStarted;
+            _runManager.OnRunEnded -= HandleRunEnded;
+        }
     }
 
 
@@ -48,5 +51,19 @@ public class RunController : MonoBehaviour
 
         playerCamera.SetCameraTarget(player.transform);
         playerCamera.gameObject.SetActive(true);
+    }
+
+    private void HandleRunEnded()
+    {
+        if (player != null)
+            Destroy(player);
+
+        playerCamera.gameObject.SetActive(false);
+    }
+
+    public void MovePlayerTo(Vector3 position)
+    {
+        if (player != null)
+            player.transform.position = position;
     }
 }

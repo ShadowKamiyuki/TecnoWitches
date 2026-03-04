@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Obsolete]
 public class DungeonGenerator : MonoBehaviour
 {
     [Header("Dungeon Settings")]
@@ -18,28 +19,28 @@ public class DungeonGenerator : MonoBehaviour
 
     private void GenerateDungeonGraph()
     {
-        Graph graph = new Graph();
+        //DungeonGraph graph = new DungeonGraph();
 
-        // generate rooms
-        for (int i = 0; i < maxRooms; i++)
-        {
-            int x = Random.Range(0, 100);
-            int y = Random.Range(0, 100);
+        //// generate rooms
+        //for (int i = 0; i < maxRooms; i++)
+        //{
+        //    int x = Random.Range(0, 100);
+        //    int y = Random.Range(0, 100);
 
-            Node room = new Node(i, x, y);
-            graph.AddRoom(room);
-        }
+        //    RoomNode room = new RoomNode(i, x, y);
+        //    graph.AddRoom(room);
+        //}
 
-        graph.AddEdges();
-        List<Edge> mst = graph.GenerateMST();
-        graph.AddLoops(extraLoops, bestPossibleLoops);
+        //graph.AddEdges();
+        //List<Edge> mst = graph.GenerateMST();
+        //graph.AddLoops(extraLoops, bestPossibleLoops);
 
-        Debug.Log("MST generado con " + mst.Count + " conexiones.");
+        //Debug.Log("MST generado con " + mst.Count + " conexiones.");
 
-        Debug.Log("Conexiones del MST:");
-        foreach (var e in mst)
-        {
-            Debug.Log($"Room {e.RoomA.id} <-> Room {e.RoomB.id}  weight={e.Weight}");
-        }
+        //Debug.Log("Conexiones del MST:");
+        //foreach (var e in mst)
+        //{
+        //    Debug.Log($"Room {e.RoomA.id} <-> Room {e.RoomB.id}  weight={e.Weight}");
+        //}
     }
 }
