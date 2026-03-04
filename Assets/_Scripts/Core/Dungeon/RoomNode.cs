@@ -11,7 +11,7 @@ public class RoomNode
     // Tamaño en celdas del grid
     public Vector2Int Size { get; set; } = Vector2Int.one;
 
-    // Celda raíz (esquina inferior izquierda)
+    // Celda raíz (centro logico en grid)
     public Vector2Int GridPosition { get; private set; }
 
     public RoomNode(int id)

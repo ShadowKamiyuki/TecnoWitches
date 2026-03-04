@@ -20,6 +20,6 @@ MonoBehaviour:
   treasureRoomCount: 2
   shopRoomCount: 1
   eliteRoomCount: 1
-  secretRoomChance: 0.1
+  secretRoomChance: 0
   useRandomSeed: 1
   fixedSeed: 12345

@@ -4,6 +4,7 @@ using UnityEngine;
 public class DungeonLayout
 {
     private Dictionary<Vector2Int, RoomNode> _occupied = new();
+    private HashSet<RoomNode> _placedNodes = new();
 
     private static readonly Vector2Int[] Directions =
     {
@@ -16,10 +17,11 @@ public class DungeonLayout
     public bool GenerateLayout(DungeonGraph graph, RoomNode startNode)
     {
         _occupied.Clear();
+        _placedNodes.Clear();
 
+        // Colocar start en (0,0)
         startNode.SetPosition(Vector2Int.zero);
-        foreach (var cell in startNode.GetOccupiedCells())
-            _occupied[cell] = startNode;
+        RegisterRoom(startNode);
 
         var queue = new Queue<RoomNode>();
         queue.Enqueue(startNode);
@@ -30,16 +32,24 @@ public class DungeonLayout
 
             foreach (var neighbor in current.Connections)
             {
-                if (IsPlaced(neighbor))
+                if (_placedNodes.Contains(neighbor))
                     continue;
 
                 bool placed = false;
 
-                for (int radius = 1; radius <= 5 && !placed; radius++)
+                foreach (var dir in Directions)
                 {
-                    foreach (var dir in Directions)
+                    Vector2Int baseCandidate = GetCandidatePosition(current, neighbor, dir);
+
+                    // Intentar pequeños offsets verticales u horizontales
+                    for (int offset = -2; offset <= 2; offset++)
                     {
-                        Vector2Int candidate = current.GridPosition + dir * radius;
+                        Vector2Int candidate = baseCandidate;
+
+                        if (dir.x != 0)
+                            candidate.y += offset;
+                        else
+                            candidate.x += offset;
 
                         if (TryPlaceRoom(neighbor, candidate))
                         {
@@ -48,27 +58,64 @@ public class DungeonLayout
                             break;
                         }
                     }
+
+                    if (placed)
+                        break;
                 }
 
                 if (!placed)
-                    return false; // falló el layout
+                {
+                    Debug.LogError($"Failed placing room {neighbor.Type}");
+                    return false;
+                }
             }
         }
 
         return true;
     }
 
-    private bool IsPlaced(RoomNode node)
+    private Vector2Int GetCandidatePosition(RoomNode current, RoomNode neighbor, Vector2Int dir)
     {
-        foreach (var cell in _occupied)
-            if (cell.Value == node)
-                return true;
+        Vector2Int currentPos = current.GridPosition;
 
-        return false;
+        if (dir == Vector2Int.right)
+        {
+            return new Vector2Int(
+                currentPos.x + current.Size.x + 1,
+                currentPos.y
+            );
+        }
+
+        if (dir == Vector2Int.left)
+        {
+            return new Vector2Int(
+                currentPos.x - neighbor.Size.x - 1,
+                currentPos.y
+            );
+        }
+
+        if (dir == Vector2Int.up)
+        {
+            return new Vector2Int(
+                currentPos.x,
+                currentPos.y + current.Size.y + 1
+            );
+        }
+
+        if (dir == Vector2Int.down)
+        {
+            return new Vector2Int(
+                currentPos.x,
+                currentPos.y - neighbor.Size.y - 1
+            );
+        }
+
+        return currentPos;
     }
 
     private bool TryPlaceRoom(RoomNode node, Vector2Int root)
     {
+        // Verificar colisiones
         for (int x = 0; x < node.Size.x; x++)
         {
             for (int y = 0; y < node.Size.y; y++)
@@ -81,10 +128,18 @@ public class DungeonLayout
         }
 
         node.SetPosition(root);
-
-        foreach (var cell in node.GetOccupiedCells())
-            _occupied[cell] = node;
+        RegisterRoom(node);
 
         return true;
+    }
+
+    private void RegisterRoom(RoomNode node)
+    {
+        foreach (var cell in node.GetOccupiedCells())
+        {
+            _occupied[cell] = node;
+        }
+
+        _placedNodes.Add(node);
     }
 }

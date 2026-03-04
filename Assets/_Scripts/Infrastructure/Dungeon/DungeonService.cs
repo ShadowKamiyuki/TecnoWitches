@@ -44,6 +44,8 @@ public class DungeonService : MonoBehaviour, IDungeonService
 
     private void BuildVisualDungeon()
     {
+        Dictionary<RoomNode, RoomView> roomViews = new();
+
         foreach (var node in CurrentGraph.Nodes)
         {
             Vector3 worldPos = new Vector3(
@@ -60,8 +62,32 @@ public class DungeonService : MonoBehaviour, IDungeonService
             var instance = Instantiate(prefab, worldPos, Quaternion.identity);
             _spawnedRooms.Add(instance);
 
+            var view = instance.GetComponent<RoomView>();
+            if (view != null)
+                roomViews[node] = view;
+
             if (node.Type == RoomType.Start)
                 PlayerSpawn = worldPos;
+        }
+
+        foreach (var node in CurrentGraph.Nodes)
+        {
+            if (!roomViews.TryGetValue(node, out var view))
+                continue;
+
+            foreach (var connection in node.Connections)
+            {
+                Vector2Int delta = connection.GridPosition - node.GridPosition;
+
+                if (delta == Vector2Int.right)
+                    view.OpenDoor(DoorDirection.East);
+                else if (delta == Vector2Int.left)
+                    view.OpenDoor(DoorDirection.West);
+                else if (delta == Vector2Int.up)
+                    view.OpenDoor(DoorDirection.North);
+                else if (delta == Vector2Int.down)
+                    view.OpenDoor(DoorDirection.South);
+            }
         }
     }
 
