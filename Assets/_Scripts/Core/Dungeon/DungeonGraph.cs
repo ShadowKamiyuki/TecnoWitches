@@ -40,7 +40,7 @@ public class DungeonGraph
             var from = connected[_random.Next(connected.Count)];
             var to = remaining[_random.Next(remaining.Count)];
 
-            from.Connect(to);
+            from.ConnectMST(to);
 
             connected.Add(to);
             remaining.Remove(to);
@@ -65,7 +65,6 @@ public class DungeonGraph
 
             var distances = BFS(a);
 
-            // Evita ciclos cortos (triángulos)
             if (!distances.ContainsKey(b) || distances[b] < 3)
             {
                 attempts++;

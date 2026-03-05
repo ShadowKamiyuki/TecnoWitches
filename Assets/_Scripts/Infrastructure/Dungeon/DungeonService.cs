@@ -47,6 +47,7 @@ public class DungeonService : MonoBehaviour, IDungeonService
     {
         Dictionary<RoomNode, RoomView> roomViews = new();
 
+        // 1 Instanciar salas
         foreach (var node in CurrentGraph.Nodes)
         {
             Vector3 worldPos = new Vector3(
@@ -56,7 +57,6 @@ public class DungeonService : MonoBehaviour, IDungeonService
             );
 
             GameObject prefab = GetPrefabForRoom(node.Type);
-
             if (prefab == null)
                 continue;
 
@@ -71,30 +71,24 @@ public class DungeonService : MonoBehaviour, IDungeonService
                 PlayerSpawn = worldPos;
         }
 
+        // 2 Abrir puertas correctamente
         foreach (var node in CurrentGraph.Nodes)
         {
-            if (!roomViews.TryGetValue(node, out var view))
+            if (!roomViews.TryGetValue(node, out var viewA))
                 continue;
 
-            foreach (var connection in node.Connections)
+            foreach (var neighbor in node.Connections)
             {
-                Vector2Int delta = connection.GridPosition - node.GridPosition;
-
-                if (delta == Vector2Int.right)
-                    view.OpenDoor(DoorDirection.East);
-                else if (delta == Vector2Int.left)
-                    view.OpenDoor(DoorDirection.West);
-                else if (delta == Vector2Int.up)
-                    view.OpenDoor(DoorDirection.North);
-                else if (delta == Vector2Int.down)
-                    view.OpenDoor(DoorDirection.South);
+                DoorDirection dir = GetDirection(node, neighbor);
+                viewA.OpenDoor(dir);
             }
         }
 
-        BuildCorridors();
+        // 3 Construir pasillos usando sockets
+        BuildCorridors(roomViews);
     }
 
-    private void BuildCorridors()
+    private void BuildCorridors(Dictionary<RoomNode, RoomView> roomViews)
     {
         var processed = new HashSet<(RoomNode, RoomNode)>();
 
@@ -105,38 +99,77 @@ public class DungeonService : MonoBehaviour, IDungeonService
                 if (processed.Contains((neighbor, node)))
                     continue;
 
-                Vector3 posA = GetWorldPosition(node);
-                Vector3 posB = GetWorldPosition(neighbor);
+                if (!roomViews.TryGetValue(node, out var viewA)) continue;
+                if (!roomViews.TryGetValue(neighbor, out var viewB)) continue;
+                if (!AreAligned(node, neighbor)) continue;
 
-                Vector2Int delta = neighbor.GridPosition - node.GridPosition;
+                DoorDirection dirA = GetDirection(node, neighbor);
+                DoorDirection dirB = GetOpposite(dirA);
 
-                Vector3 direction = new Vector3(
-                    Mathf.Sign(delta.x),
-                    0,
-                    Mathf.Sign(delta.y)
-                );
+                Vector3 start = viewA.GetDoorPosition(dirA);
+                Vector3 end = viewB.GetDoorPosition(dirB);
 
-                Vector3 corridorPosition = posA + direction * (roomSpacing * 0.5f);
-
-                Quaternion rotation = Quaternion.identity;
-
-                if (Mathf.Abs(delta.x) > 0)
-                    rotation = Quaternion.Euler(0, 90, 0);
-
-                Instantiate(corridorPrefab, corridorPosition, rotation);
+                SpawnCorridorBetween(start, end);
 
                 processed.Add((node, neighbor));
             }
         }
     }
 
-    private Vector3 GetWorldPosition(RoomNode node)
+    private bool AreAligned(RoomNode a, RoomNode b)
     {
-        return new Vector3(
-            node.GridPosition.x * roomSpacing,
-            0f,
-            node.GridPosition.y * roomSpacing
-        );
+        return a.GridPosition.x == b.GridPosition.x ||
+               a.GridPosition.y == b.GridPosition.y;
+    }
+
+    private DoorDirection GetDirection(RoomNode from, RoomNode to)
+    {
+        Vector2Int delta = to.GridPosition - from.GridPosition;
+
+        if (Mathf.Abs(delta.x) > Mathf.Abs(delta.y))
+            return delta.x > 0 ? DoorDirection.East : DoorDirection.West;
+        else
+            return delta.y > 0 ? DoorDirection.North : DoorDirection.South;
+    }
+
+    private DoorDirection GetOpposite(DoorDirection dir)
+    {
+        return dir switch
+        {
+            DoorDirection.North => DoorDirection.South,
+            DoorDirection.South => DoorDirection.North,
+            DoorDirection.East => DoorDirection.West,
+            DoorDirection.West => DoorDirection.East,
+            _ => DoorDirection.North
+        };
+    }
+
+    private void SpawnCorridorBetween(Vector3 start, Vector3 end)
+    {
+        Vector3 delta = end - start;
+
+        bool horizontal = Mathf.Abs(delta.x) > Mathf.Abs(delta.z);
+
+        float distance = horizontal ? Mathf.Abs(delta.x) : Mathf.Abs(delta.z);
+
+        float segmentLength = 5f;
+
+        int segmentCount = Mathf.RoundToInt(distance / segmentLength);
+
+        Vector3 direction = (end - start).normalized;
+
+        Quaternion rotation = horizontal
+            ? Quaternion.Euler(0, 90, 0)
+            : Quaternion.identity;
+
+        for (int i = 0; i < segmentCount; i++)
+        {
+            Vector3 pos = start + direction * (segmentLength * (i + 0.5f));
+
+            var corridor = Instantiate(corridorPrefab, pos, rotation);
+
+            _spawnedRooms.Add(corridor);
+        }
     }
 
     private GameObject GetPrefabForRoom(RoomType type)

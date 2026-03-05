@@ -185,10 +185,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bb06aa475f2d4245ac44b05ff6b8a1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  doorNorth: {fileID: 2890637215977140674}
-  doorSouth: {fileID: 8977816689159023495}
-  doorEast: {fileID: 5580010417997155923}
-  doorWest: {fileID: 8610262750999053680}
+  northSocket: {fileID: 4995595850124565708}
+  southSocket: {fileID: 987395309938303691}
+  eastSocket: {fileID: 2730390760668967331}
+  westSocket: {fileID: 6858716870367944520}
+  northDoor: {fileID: 0}
+  southDoor: {fileID: 0}
+  eastDoor: {fileID: 0}
+  westDoor: {fileID: 0}
 --- !u!1 &5580010417997155923
 GameObject:
   m_ObjectHideFlags: 0
