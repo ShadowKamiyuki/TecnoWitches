@@ -18,157 +18,159 @@ public class DungeonGenerator
         Random.InitState(seed);
 
         Graph = new DungeonGraph(seed);
-        Graph.Generate(config.RoomCount, config.ExtraLoopPercentage);
+
+        GenerateGrid(config.RoomCount);
 
         AssignSpecialRooms();
 
-        GenerateGridLayout();
-
-        AddGridLoops(config.ExtraLoopPercentage);
+        AddLoops(config.ExtraLoopPercentage);
 
         return true;
     }
 
-    // GRID LAYOUT (MST expansion)
-    private void GenerateGridLayout()
-    {
-        var occupied = new Dictionary<Vector2Int, RoomNode>();
+    // ================================
+    // GRID GENERATION
+    // ================================
 
-        var start = Graph.Nodes[0];
+    private void GenerateGrid(int roomCount)
+    {
+        Dictionary<Vector2Int, RoomNode> grid = new();
+
+        Queue<RoomNode> frontier = new();
+
+        RoomNode start = new RoomNode(0);
+        start.Type = RoomType.Start;
+        start.Size = Vector2Int.one;
 
         start.SetPosition(Vector2Int.zero);
-        RegisterRoom(start, occupied);
 
-        Queue<RoomNode> queue = new();
-        queue.Enqueue(start);
+        Graph.Nodes.Add(start);
 
-        while (queue.Count > 0)
+        grid[start.GridPosition] = start;
+
+        frontier.Enqueue(start);
+
+        int id = 1;
+
+        while (Graph.Nodes.Count < roomCount && frontier.Count > 0)
         {
-            var node = queue.Dequeue();
+            var current = frontier.Dequeue();
 
-            foreach (var neighbor in node.MSTConnections)
+            List<Vector2Int> dirs = new(Directions);
+            Shuffle(dirs);
+
+            foreach (var dir in dirs)
             {
-                if (neighbor.IsPlaced)
+                if (Graph.Nodes.Count >= roomCount)
+                    break;
+
+                Vector2Int pos = current.GridPosition + dir * 2;
+
+                if (grid.ContainsKey(pos))
                     continue;
 
-                List<Vector2Int> dirs = new(Directions);
-                Shuffle(dirs);
+                RoomNode room = new RoomNode(id++);
+                room.Size = Vector2Int.one;
 
-                foreach (var dir in dirs)
-                {
-                    Vector2Int candidate = GetPosition(node, neighbor, dir);
+                room.SetPosition(pos);
 
-                    if (!CanPlace(neighbor, candidate, occupied))
-                        continue;
+                Graph.Nodes.Add(room);
 
-                    neighbor.SetPosition(candidate);
-                    RegisterRoom(neighbor, occupied);
+                grid[pos] = room;
 
-                    queue.Enqueue(neighbor);
-                    break;
-                }
+                current.Connect(room);
+
+                frontier.Enqueue(room);
             }
         }
     }
 
-    // LOOP CREATION (only if grid-adjacent)
-    private void AddGridLoops(float percentage)
-    {
-        int attempts = 200;
-        int loopsToAdd = Mathf.RoundToInt(Graph.Nodes.Count * percentage);
+    // ================================
+    // LOOPS
+    // ================================
 
-        while (loopsToAdd > 0 && attempts-- > 0)
+    private void AddLoops(float percentage)
+    {
+        int loops = Mathf.RoundToInt(Graph.Nodes.Count * percentage);
+
+        for (int i = 0; i < loops; i++)
         {
             var a = Graph.Nodes[Random.Range(0, Graph.Nodes.Count)];
-            var b = Graph.Nodes[Random.Range(0, Graph.Nodes.Count)];
 
-            if (a == b)
-                continue;
+            foreach (var dir in Directions)
+            {
+                Vector2Int target = a.GridPosition + dir * 2;
 
-            if (a.Connections.Contains(b))
-                continue;
+                var b = Graph.Nodes.Find(n => n.GridPosition == target);
 
-            if (!AreAdjacent(a, b))
-                continue;
+                if (b == null)
+                    continue;
 
-            a.Connect(b);
+                if (a.Connections.Contains(b))
+                    continue;
 
-            loopsToAdd--;
+                a.Connect(b);
+
+                break;
+            }
         }
     }
 
-    // HELPERS
-    private Vector2Int GetPosition(RoomNode from, RoomNode to, Vector2Int dir)
+    // ================================
+    // SPECIAL ROOMS
+    // ================================
+
+    private void AssignSpecialRooms()
     {
-        int separation = 1;
+        var start = Graph.Nodes[0];
 
-        if (dir == Vector2Int.right)
-            return new Vector2Int(from.GridPosition.x + from.Size.x + separation, from.GridPosition.y);
+        var boss = GetFarthest(start);
 
-        if (dir == Vector2Int.left)
-            return new Vector2Int(from.GridPosition.x - to.Size.x - separation, from.GridPosition.y);
-
-        if (dir == Vector2Int.up)
-            return new Vector2Int(from.GridPosition.x, from.GridPosition.y + from.Size.y + separation);
-
-        if (dir == Vector2Int.down)
-            return new Vector2Int(from.GridPosition.x, from.GridPosition.y - to.Size.y - separation);
-
-        return from.GridPosition;
+        boss.Type = RoomType.Boss;
+        boss.Size = new Vector2Int(2, 2);
     }
 
-    private bool CanPlace(RoomNode node, Vector2Int root, Dictionary<Vector2Int, RoomNode> occupied)
+    private RoomNode GetFarthest(RoomNode start)
     {
-        for (int x = 0; x < node.Size.x; x++)
-        {
-            for (int y = 0; y < node.Size.y; y++)
-            {
-                Vector2Int cell = root + new Vector2Int(x, y);
+        Dictionary<RoomNode, int> dist = new();
+        Queue<RoomNode> q = new();
 
-                if (occupied.ContainsKey(cell))
-                    return false;
+        dist[start] = 0;
+        q.Enqueue(start);
+
+        RoomNode farthest = start;
+
+        while (q.Count > 0)
+        {
+            var n = q.Dequeue();
+
+            foreach (var c in n.Connections)
+            {
+                if (dist.ContainsKey(c))
+                    continue;
+
+                dist[c] = dist[n] + 1;
+
+                if (dist[c] > dist[farthest])
+                    farthest = c;
+
+                q.Enqueue(c);
             }
         }
 
-        return true;
+        return farthest;
     }
 
-    private void RegisterRoom(RoomNode node, Dictionary<Vector2Int, RoomNode> occupied)
-    {
-        foreach (var cell in node.GetOccupiedCells())
-            occupied[cell] = node;
-    }
-
-    private bool AreAdjacent(RoomNode a, RoomNode b)
-    {
-        Vector2Int delta = b.GridPosition - a.GridPosition;
-
-        int dx = Mathf.Abs(delta.x);
-        int dy = Mathf.Abs(delta.y);
-
-        return (dx == 1 && dy == 0) || (dx == 0 && dy == 1);
-    }
+    // ================================
+    // UTILS
+    // ================================
 
     private void Shuffle<T>(List<T> list)
     {
         for (int i = 0; i < list.Count; i++)
         {
             int j = Random.Range(i, list.Count);
-
             (list[i], list[j]) = (list[j], list[i]);
         }
-    }
-
-    // SPECIAL ROOMS
-    private void AssignSpecialRooms()
-    {
-        var start = Graph.Nodes[0];
-        start.Type = RoomType.Start;
-        start.Size = Vector2Int.one;
-
-        var boss = Graph.GetFarthest(start);
-
-        boss.Type = RoomType.Boss;
-        boss.Size = new Vector2Int(2, 2);
     }
 }

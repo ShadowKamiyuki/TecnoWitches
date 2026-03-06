@@ -46,13 +46,25 @@ public class DungeonService : MonoBehaviour, IDungeonService
     private void BuildVisualDungeon()
     {
         Dictionary<RoomNode, RoomView> roomViews = new();
+        HashSet<Vector2Int> occupiedCells = new();
 
         // 1 Instanciar salas
         foreach (var node in CurrentGraph.Nodes)
         {
+            foreach (var cell in node.GetOccupiedCells())
+            {
+                if (occupiedCells.Contains(cell))
+                {
+                    Debug.LogError($"Room overlap detected at {cell}");
+                    continue;
+                }
+
+                occupiedCells.Add(cell);
+            }
+
             Vector3 worldPos = new Vector3(
                 node.GridPosition.x * roomSpacing,
-                0f,
+                0,
                 node.GridPosition.y * roomSpacing
             );
 
@@ -71,7 +83,7 @@ public class DungeonService : MonoBehaviour, IDungeonService
                 PlayerSpawn = worldPos;
         }
 
-        // 2 Abrir puertas correctamente
+        // 2 Abrir puertas
         foreach (var node in CurrentGraph.Nodes)
         {
             if (!roomViews.TryGetValue(node, out var viewA))
@@ -79,12 +91,15 @@ public class DungeonService : MonoBehaviour, IDungeonService
 
             foreach (var neighbor in node.Connections)
             {
+                if (!AreAdjacent(node, neighbor))
+                    continue;
+
                 DoorDirection dir = GetDirection(node, neighbor);
                 viewA.OpenDoor(dir);
             }
         }
 
-        // 3 Construir pasillos usando sockets
+        // 3 Construir pasillos
         BuildCorridors(roomViews);
     }
 
@@ -101,10 +116,22 @@ public class DungeonService : MonoBehaviour, IDungeonService
 
                 if (!roomViews.TryGetValue(node, out var viewA)) continue;
                 if (!roomViews.TryGetValue(neighbor, out var viewB)) continue;
-                if (!AreAligned(node, neighbor)) continue;
 
-                DoorDirection dirA = GetDirection(node, neighbor);
-                DoorDirection dirB = GetOpposite(dirA);
+                Vector2Int delta = neighbor.GridPosition - node.GridPosition;
+
+                DoorDirection dirA;
+                DoorDirection dirB;
+
+                if (Mathf.Abs(delta.x) > Mathf.Abs(delta.y))
+                {
+                    dirA = delta.x > 0 ? DoorDirection.East : DoorDirection.West;
+                }
+                else
+                {
+                    dirA = delta.y > 0 ? DoorDirection.North : DoorDirection.South;
+                }
+
+                dirB = GetOpposite(dirA);
 
                 Vector3 start = viewA.GetDoorPosition(dirA);
                 Vector3 end = viewB.GetDoorPosition(dirB);
@@ -116,10 +143,14 @@ public class DungeonService : MonoBehaviour, IDungeonService
         }
     }
 
-    private bool AreAligned(RoomNode a, RoomNode b)
+    private bool AreAdjacent(RoomNode a, RoomNode b)
     {
-        return a.GridPosition.x == b.GridPosition.x ||
-               a.GridPosition.y == b.GridPosition.y;
+        Vector2Int delta = b.GridPosition - a.GridPosition;
+
+        int dx = Mathf.Abs(delta.x);
+        int dy = Mathf.Abs(delta.y);
+
+        return (dx == 1 && dy == 0) || (dx == 0 && dy == 1);
     }
 
     private DoorDirection GetDirection(RoomNode from, RoomNode to)
@@ -146,19 +177,17 @@ public class DungeonService : MonoBehaviour, IDungeonService
 
     private void SpawnCorridorBetween(Vector3 start, Vector3 end)
     {
-        Vector3 delta = end - start;
-
-        bool horizontal = Mathf.Abs(delta.x) > Mathf.Abs(delta.z);
-
-        float distance = horizontal ? Mathf.Abs(delta.x) : Mathf.Abs(delta.z);
-
         float segmentLength = 5f;
 
-        int segmentCount = Mathf.RoundToInt(distance / segmentLength);
+        Vector3 delta = end - start;
+        float distance = delta.magnitude;
 
-        Vector3 direction = (end - start).normalized;
+        int segmentCount = Mathf.Max(1, Mathf.RoundToInt(distance / segmentLength));
 
-        Quaternion rotation = horizontal
+        Vector3 direction = delta.normalized;
+
+        Quaternion rotation =
+            Mathf.Abs(delta.x) > Mathf.Abs(delta.z)
             ? Quaternion.Euler(0, 90, 0)
             : Quaternion.identity;
 
