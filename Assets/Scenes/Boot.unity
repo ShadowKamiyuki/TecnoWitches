@@ -97,7 +97,8 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_LightingSettings: {fileID: 0}
+  m_LightingSettings: {fileID: 4890085278179872738, guid: 4bdb6e8f8d0c1d64a99b4987701a1e8a,
+    type: 2}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -166,18 +167,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 084dcb576a2348045a190dff80856f19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 503552888803306912, guid: ecb740c824c4dff4f95e0e256b7c776d,
-    type: 3}
-  updateManager: {fileID: 1341813522856259509, guid: 38c1ce4f19525594dadda7cf156f8334,
-    type: 3}
-  audioManager: {fileID: 3460719974520523816, guid: b882a5173def61c438b758c2eddb105e,
-    type: 3}
-  sceneLoader: {fileID: 3388123137619546599, guid: 66da54f1af78e3d42982a258503c13b6,
-    type: 3}
-  levelController: {fileID: 7998054412771527438, guid: c54a5854dc2795449b51dc6807ff3107,
-    type: 3}
-  eventSystemPrefab: {fileID: 3804705772384049089, guid: 05c50607eb0489b49a726d08b077e255,
-    type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
